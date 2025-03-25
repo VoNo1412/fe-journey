@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  --primary-border-color: rgb(199, 197, 197);
+  --primary-border-radius: 24px;
+  --primary-background-color: rgb(246 245 245);
+  --second-border-list-color: #e0dddd;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background-color: var(--primary-background-color)
+
+}
+
+img {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+input {
+  width: 96%;
+  height: 40px;
+  padding-left: 10px;
+}
+
+input:focus-visible {
+  outline: none;
+}
+
+.css-cokf1l-MuiListItemIcon-root {
+  min-width: 30px !important;
+}
+
+.circle,
+.avatar,
+.search {
+  cursor: pointer;
+}
+
+.css-b7dj7n-MuiList-root {
+  padding: 16px 0;
+}
+
+.css-1umw9bq-MuiSvgIcon-root {
+  font-size: 20px !important;
+}
+
+.css-4bx69l-MuiButtonBase-root-MuiListItemButton-root.Mui-selected, .css-4bx69l-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+  background-color: transparent;
+  opacity: 0.6;
+}
+
+.active {
+  opacity: 0.9;
+}
+
+.active .css-rizt0-MuiTypography-root {
+  font-weight: 800 !important;
+}
+
+.css-gizmyy {
+  background-color: var(--second-border-list-color);
+}
+
+
