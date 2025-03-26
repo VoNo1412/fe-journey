@@ -12,7 +12,7 @@ const FocusTimer = () => {
     return (
         <Box
             sx={{
-                backgroundColor: "white",
+                backgroundColor: "var(--primary-light-bgColor)",
                 borderRadius: 4,
                 boxShadow: 3,
                 padding: 2,

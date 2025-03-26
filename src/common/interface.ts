@@ -28,5 +28,7 @@ interface IAuthContext {
 
 export type {
     IAuthContext,
-    Task, Category, User
+    Task, 
+    Category, 
+    User
 }

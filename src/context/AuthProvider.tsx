@@ -4,8 +4,8 @@ import { IAuthContext } from "../common/interface";
 
 const AuthContext = createContext<IAuthContext>({
     auth: null,
-    setAuth: () => { },
-    loading: false
+    setAuth: null,
+    loading: false,
 });
 
 interface AuthProviderProps {

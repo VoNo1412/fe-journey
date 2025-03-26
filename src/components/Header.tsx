@@ -3,8 +3,8 @@ import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import { Box, InputBase } from '@mui/material';
-import LogoImage from "../assets/logo.png";
+import { Box, InputBase, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const HeaderContainer = styled('header')({
     display: 'flex',
@@ -20,7 +20,7 @@ const MainHeader = styled('div')({
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
-    flex: 7
+    width: "100%"
 });
 
 const SearchContainer = styled('div')(({ theme }) => ({
@@ -49,34 +49,31 @@ const IconWrapper = styled('div')(({ theme }) => ({
 }));
 
 const Avatar = styled('img')({
-    width: '40px',
     borderRadius: '50%',
 });
 
-const Logo = styled('img')({
-    borderRadius: '50%',
-});
 
 const Header: React.FC = () => {
     return (
         <HeaderContainer>
-            <Box sx={{flex: 1}}>
-                <Logo src={LogoImage} alt="logo" />
-            </Box>
-            <MainHeader>
-                <SearchContainer sx={{flex: 9}}>
-                    <SearchIcon />
+            <MainHeader sx={{ bgcolor: "var(--primary-light-bgColor)", borderRadius: "28px" }}>
+                <SearchContainer sx={{ flex: 12 }}>
+                    <SearchIcon sx={{ marginRight: 1 }} />
                     <InputBase placeholder='Search task' fullWidth />
+                    <Divider />
                 </SearchContainer>
-                <Divider />
-                <Box sx={{display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0 10px", flex: 4}}>
-                    <IconWrapper>
-                        <AccessTimeFilledIcon />
+                <Box sx={{ display: "flex", flex: 3, alignItems: "center", justifyContent: "flex-end", gap: "0 10px" }}>
+                    <IconWrapper sx={{ borderColor: "var(--primary-color)" }}>
+                        <AccessTimeFilledIcon sx={{ fontSize: "var(--primary-size-icons)" }} />
                     </IconWrapper>
-                    <IconWrapper>
-                        <CircleNotificationsIcon />
+                    <IconWrapper sx={{ borderColor: "var(--primary-color)" }}>
+                        <CircleNotificationsIcon sx={{ fontSize: "var(--primary-size-icons)" }} />
                     </IconWrapper>
-                    <Avatar src="https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=164&h=164&fit=crop&auto=format&dpr=2" alt="avatar" />
+                    <Box sx={{ width: "46px", height: "10%" }}>
+                        <Link to={"/profile"}>
+                            <Avatar src="https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=164&h=164&fit=crop&auto=format&dpr=2" alt="avatar" />
+                        </Link>
+                    </Box>
                 </Box>
             </MainHeader>
         </HeaderContainer>

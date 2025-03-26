@@ -6,6 +6,7 @@ import { User } from "../common/interface";
 import { AUTH_API } from "../api/api";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import alertProgressFeature from "../common/alert";
 
 const LoginPage = () => {
   const { setAuth }: any = useAuth();
@@ -31,7 +32,7 @@ const LoginPage = () => {
       } else {
         res = await AUTH_API.apiSignUp(form);
       }
-      
+
       setAuth({ user: { ...res.user } });
       navigate("/dashboard", { replace: true });
       setForm({ username: "", password: "" });
@@ -47,14 +48,15 @@ const LoginPage = () => {
       alignItems="center"
       justifyContent="center"
       minHeight="100vh"
-      bgcolor="#FAF3F0"
+      sx={{background: "radial-gradient(#a43f3f, transparent);"}}
       p={2}
     >
       <Box
         sx={{
           width: 320,
           p: 3,
-          bgcolor: "white",
+          // bgcolor: "var(--primary-deep-bgColor)",
+          background: "radial-gradient(#a43f3f, transparent);",
           borderRadius: 3,
           boxShadow: 3,
           textAlign: "center",
@@ -64,7 +66,7 @@ const LoginPage = () => {
 
       >
         <Typography variant="h5" fontWeight="bold">
-          Documentary Your Jouney!!!
+          Documentary Your Journey!!!
         </Typography>
 
         <TextField
@@ -91,8 +93,6 @@ const LoginPage = () => {
           fullWidth
           variant="contained"
           sx={{
-            bgcolor: "#D3D3D3",
-            color: "black",
             mb: 2,
             "&:hover": { bgcolor: "#B0B0B0" },
           }}
@@ -106,7 +106,7 @@ const LoginPage = () => {
           fullWidth
           variant="outlined"
           startIcon={<VpnKeyIcon />}
-          sx={{ mb: 2, color: "black", borderColor: "#D3D3D3" }}
+          sx={{ mb: 2, color: "var(--primary-color)", borderColor: "#D3D3D3" }}
           onClick={() => setCheckLogin(!checkLogin)}
         >
           {!checkLogin ? "Login" : "Signup"}
@@ -116,7 +116,8 @@ const LoginPage = () => {
           fullWidth
           variant="outlined"
           startIcon={<GoogleIcon />}
-          sx={{ mb: 2, color: "black", borderColor: "#D3D3D3" }}
+          sx={{ mb: 2, color: "var(--primary-color)", borderColor: "#D3D3D3" }}
+          onClick={alertProgressFeature}
         >
           Continue with Google
         </Button>
@@ -125,7 +126,8 @@ const LoginPage = () => {
           fullWidth
           variant="outlined"
           startIcon={<FacebookIcon />}
-          sx={{ color: "black", borderColor: "#D3D3D3" }}
+          onClick={alertProgressFeature}
+          sx={{ color: "var(--primary-color)", borderColor: "#D3D3D3" }}
         >
           Continue with Facebook
         </Button>

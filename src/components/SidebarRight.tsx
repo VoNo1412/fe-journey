@@ -13,7 +13,7 @@ export default function SidebarRight() {
     return (
         <>
             <div>
-                <Box sx={{ background: "white", padding: 1, borderRadius: 6, marginBottom: 3 }}>
+                <Box sx={{ background: "var(--third-deep-bgColor)", padding: 1, borderRadius: 6, marginBottom: 3 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
                             value={date}

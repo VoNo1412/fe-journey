@@ -19,7 +19,7 @@ const meetings = [
 
 const MeetingSchedule = () => {
   return (
-    <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end" }}>
+    <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end", bgcolor: "var(--primary-deep-bgColor)", WebkitBoxShadow: "0 10px 10px powderblue", color: "var(--primary-color)" }}>
       <CardContent>
         <Typography variant="h6" fontWeight="bold">
           Up next
@@ -38,7 +38,7 @@ const MeetingSchedule = () => {
               />
               <Box>
                 <Typography fontWeight="bold">{meeting.title}</Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="var(--primary-color)">
                   {meeting.description}
                 </Typography>
                 <Typography variant="body2" fontWeight="bold" color="gray">

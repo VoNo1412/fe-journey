@@ -36,9 +36,9 @@ const TASK_API = {
             throw new Error(error as any);
         }
     },
-    apiDeleteTask: async (taskId: number) => {
+    apiDeleteTaskUser: async (taskUserId: number) => {
         try {
-            const response = await axios.delete(`/${endpoint.task}/${taskId}`);
+            const response = await axios.delete(`/${endpoint.task}/${taskUserId}`);
             return response.data;
         } catch (error) {
             throw new Error(error as any);
