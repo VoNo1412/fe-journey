@@ -5,9 +5,9 @@ const endpoint = {
     task: "task",
     category: "category",
     signup: "signup",
-    login: "login"
+    login: "login",
+    user: "user"
 }
-
 
 // Task
 const TASK_API = {
@@ -90,5 +90,6 @@ const AUTH_API = {
 export {
     TASK_API,
     CATEGORY_API,
-    AUTH_API
+    AUTH_API,
+    endpoint
 };

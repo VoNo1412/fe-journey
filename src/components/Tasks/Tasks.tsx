@@ -1,15 +1,15 @@
-import { TextField, IconButton, Button, Box, InputAdornment } from "@mui/material";
+import { TextField, IconButton, Button, Box, InputAdornment, InputLabel, Autocomplete } from "@mui/material";
 import { Send, Add, AccessTime, Event } from "@mui/icons-material";
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Typography, Checkbox, List, ListItem, ListItemButton } from "@mui/material";
-import { ArrowForwardIos } from "@mui/icons-material";
+import { List } from "@mui/material";
 import { Category, Task } from "../../common/interface";
-import React from "react";
-import { CATEGORY_API, TASK_API } from "../../api/api";
+import React, { useState } from "react";
+import { CATEGORY_API, endpoint, TASK_API } from "../../api/api";
 import useAuth from "../../hooks/useAuth";
-import DeleteIcon from "@mui/icons-material/Delete";
+import TaskMenuDropdown from "./components/TaskMenuDropdown";
+import useFetchQuery from "../../hooks/useFetchSearch";
 
 
 export const TaskInput = () => {
@@ -17,11 +17,14 @@ export const TaskInput = () => {
     const [category, setCategory] = React.useState<Category[]>([]);
     const inputRef = React.useRef<HTMLInputElement | null>(null); // Define the
     const { auth, setAuth } = useAuth();
-    console.log('this is user: ', auth);
+    const [query, setQuery] = useState("");
+    const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
+    const [assignId, setAssignId] = useState<number[]>([]);
+
+
     const [formData, setFormData] = React.useState({
         title: "",
         categoryId: null as null | number,
-        time: null,
         isCompleted: false,
     });
 
@@ -53,7 +56,7 @@ export const TaskInput = () => {
             await TASK_API.apiCreateTask({ ...formData, userId: auth.user.userId });
             setFormData({ ...formData, [e.target.name]: e.target.value })
             getTasks();
-            setFormData({ title: "", categoryId: formData.categoryId, time: null, isCompleted: false });
+            setFormData({ title: "", categoryId: formData.categoryId, isCompleted: false });
         } catch (error) {
             console.error("Error creating task:", error);
             alert("Failed to create task.");
@@ -78,7 +81,7 @@ export const TaskInput = () => {
         }
     }
 
-    console.log("tasks: ", tasks);
+    console.log(assignId)
 
     return (
         <>
@@ -131,12 +134,35 @@ export const TaskInput = () => {
 
                 {/* Quick Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                    <Autocomplete
+                        id="free-solo-demo"
+                        freeSolo
+                        options={data}
+                        getOptionLabel={(option: any) => option.name?.toString() || ""}
+                        onChange={(event, value) => {
+                            if (value && !assignId.includes(value.userId)) {
+                                setAssignId([...assignId, value.userId]); // Chỉ thêm nếu chưa tồn tại
+                            }
+                        }}
+                        renderInput={(params) => 
+                            <TextField 
+                            {...params} 
+                            label="Assigment task to users" 
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={e => {
+                                if(e.key == "Enter") {
+                                    e.preventDefault();
+                                    return;
+                                }
+                            }}
+                        />}
+                    />
                     <FormControl sx={{ flex: 1 }}>
-                        {/* <InputLabel id="demo-simple-select-label">{category.find(x => x.categoryId == formData.categoryId)?.name}</InputLabel> */}
+                        <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}
                         <Select
-                            // labelId="demo-simple-select-label"
-                            // id="demo-simple-select"
-                            value={formData.categoryId}
+                            labelId="category-label"
+                            id="categoryId"
+                            value={formData.categoryId || ""}
                             label="categoryId"
                             name="categoryId"
                             onChange={handleInputChange}
@@ -153,7 +179,6 @@ export const TaskInput = () => {
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Next week</Button>
                     <Button variant="outlined" startIcon={<Event />} sx={chipStyle}>Custom</Button>
                 </Box>
-                {/* <TaskPopupForm open={1} handleClose={1}/> */}
             </Box>
             <Box
                 sx={{
@@ -161,41 +186,12 @@ export const TaskInput = () => {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                 }}
             >
-                <List sx={{ minHeight: "70px" }}>
-                    {tasks?.map((task: any, index) => (
-                        <ListItem key={index} disablePadding>
-                            <ListItemButton sx={{ display: "flex", alignItems: "center" }}>
-                                {/* Checkbox */}
-                                <Checkbox sx={{ marginRight: 1 }} checked={task.isCompleted} />
-
-                                {/* Task Details */}
-                                <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                    <Box>
-                                        <Typography variant="body1">{task.title} - 20:30</Typography>
-                                        {/* Category with Color Indicator */}
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                            <Box
-                                                sx={{
-                                                    width: 8,
-                                                    height: 8,
-                                                    borderRadius: "50%",
-                                                    backgroundColor: task.color
-                                                }}
-                                            />
-                                            <Typography variant="body2" color="gray">
-                                                {task.nameCategory}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                    <DeleteIcon type="button" sx={{ marginRight: "20px" }} onClick={() => handleDeleteTask(task.taskUserId)} />
-                                </Box>
-
-
-                                <ArrowForwardIos sx={{ fontSize: 16, color: "#aaa" }} />
-                            </ListItemButton>
-                        </ListItem>
+                {tasks.length ? <List sx={{ minHeight: "70px" }}>
+                    {tasks?.map((task, index) => (
+                        <TaskMenuDropdown task={task} index={index} handleDeleteTask={handleDeleteTask} />
                     ))}
-                </List>
+                </List> : <></>
+                }
             </Box>
         </>
     );

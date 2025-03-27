@@ -2,11 +2,12 @@ interface Task {
     taskId?: number;
     title: string; 
     categoryId: number | null; 
-    time?: Date | null;
+    time?: null | string;
     isCompleted: boolean;
     userId?: string;
     nameCategory?: string;
     color?: string;
+    taskUserId?: number | any;
 }
 
 interface Category {

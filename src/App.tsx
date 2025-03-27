@@ -26,13 +26,13 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<LearningRoadmap />} />
         <Route path="/profile" element={<Profile />} />
-        {/* <Route element={<RequireAuth />}> */}
+        <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/level" element={<Level />} />
           </Route>
-        {/* </Route> */}
+        </Route>
       </Routes>
     </Router>
   );

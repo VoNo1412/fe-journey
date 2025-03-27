@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Typography } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Typography, Box } from "@mui/material";
 import axios from "axios";
-
 const TaskPopupForm = ({ open, handleClose }: any) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -30,25 +29,28 @@ const TaskPopupForm = ({ open, handleClose }: any) => {
     }
   };
 
+  console.log(formData);
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Create Task</DialogTitle>
-      <DialogContent>
-        <TextField label="Title" name="title" value={formData.title} onChange={handleChange} required fullWidth margin="dense" />
-        <TextField label="Description" name="description" value={formData.description} onChange={handleChange} fullWidth multiline rows={3} margin="dense" />
-        <TextField label="Category" name="category" value={formData.category} onChange={handleChange} fullWidth margin="dense" />
-        <TextField select label="Status" name="status" value={formData.status} onChange={handleChange} fullWidth margin="dense">
-          {statuses.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status}
-            </MenuItem>
-          ))}
-        </TextField>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="secondary">Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">Create Task</Button>
-      </DialogActions>
+      <Box sx={{ background: "var(--third-light-bgColor)" }}>
+        <DialogTitle sx={{color: "var(--primary-color)"}}>Create SubTask</DialogTitle>
+        <DialogContent>
+          <TextField label="Title" name="title" value={formData.title} onChange={handleChange} required fullWidth margin="dense" />
+          <TextField label="Description" name="description" value={formData.description} onChange={handleChange} fullWidth multiline rows={3} margin="dense" />
+          {/* <TextField label="Category" name="category" value={formData.category} onChange={handleChange} fullWidth margin="dense" /> */}
+          <TextField select label="Status" name="status" value={formData.status} onChange={handleChange} fullWidth margin="dense">
+            {statuses.map((status) => (
+              <MenuItem key={status} value={status}>
+                {status}
+              </MenuItem>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">Create Task</Button>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 };

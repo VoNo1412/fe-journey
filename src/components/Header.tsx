@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import { Box, InputBase, Typography } from '@mui/material';
+import { Box, InputBase } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const HeaderContainer = styled('header')({
