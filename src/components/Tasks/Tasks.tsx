@@ -19,44 +19,50 @@ export const TaskInput = () => {
     const { auth, setAuth } = useAuth();
     const [query, setQuery] = useState("");
     const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
-    const [assignId, setAssignId] = useState<number[]>([]);
-
+    const [assignToId, setAssignToId] = useState<number[]>([]);
 
     const [formData, setFormData] = React.useState({
         title: "",
         categoryId: null as null | number,
         isCompleted: false,
+        assignToId: [] as number[]
     });
-
-    async function getTasks() {
-        const tasks = await TASK_API.apiGetTasks(auth?.user.userId);
-        if (auth?.totalTasks !== tasks.length) {
-            setAuth((prevAuth: typeof auth) => ({ ...prevAuth, totalTasks: tasks.length }));
-        }
-        setTasks(tasks);
-    }
-
-    async function getCategories() {
-        const categories = await CATEGORY_API.apiGetCategories();
-        setCategory(categories);
-        setFormData({ ...formData, categoryId: categories[0].categoryId })
-    }
 
 
     React.useEffect(() => {
-        if (auth?.user?.userId) {
-            getTasks();
-            getCategories();
-        }
+        if (!auth?.user?.userId) return;
+        const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth.user.userId);
+
+        fetchGetTasks()
+            .then((res) => {
+                setTasks(res);
+                setAuth({ ...auth, totalTasks: res.totalTasks });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
+        fetchGetCategories()
+            .then((res) => {
+                setCategory(res);
+                setFormData({ ...formData, categoryId: res[0].categoryId })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, [auth?.user?.userId]); // Chỉ chạy khi userId thay đổi
 
     const handleSubmitTask = async (e: any) => {
         e.preventDefault();
         try {
-            await TASK_API.apiCreateTask({ ...formData, userId: auth.user.userId });
+            const data = await TASK_API.apiCreateTask({ ...formData, userId: auth.user.userId, });
+            if (data?.statusCode !== 200) return;
+            const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            setTasks((prevTasks) => [...prevTasks, { ...formData, taskId: data.data.taskId, time: currentTime }]); 
             setFormData({ ...formData, [e.target.name]: e.target.value })
-            getTasks();
-            setFormData({ title: "", categoryId: formData.categoryId, isCompleted: false });
+            setFormData({ title: "", categoryId: formData.categoryId, isCompleted: false, assignToId: [] });
         } catch (error) {
             console.error("Error creating task:", error);
             alert("Failed to create task.");
@@ -67,21 +73,22 @@ export const TaskInput = () => {
         setFormData((prevData) => ({
             ...prevData,
             [e.target.name]: e.target.value,
-            title: inputRef.current?.value
+            title: inputRef.current?.value,
+            assignToId
         } as any));
     };
 
-    const handleDeleteTask = async (tasksUserId: number) => {
+    const handleDeleteTask = async (taskId: number) => {
         try {
-            await TASK_API.apiDeleteTaskUser(tasksUserId);
-            getTasks();
+            // Xóa task từ danh sách tasks
+            console.log(taskId)
+            await TASK_API.apiDeleteTaskUser(taskId);
+            setTasks((prevTasks) => prevTasks.filter((task) => task.taskId !== taskId));
         } catch (error) {
             console.error("Error creating task:", error);
             alert("delete task failure.");
         }
     }
-
-    console.log(assignId)
 
     return (
         <>
@@ -135,27 +142,28 @@ export const TaskInput = () => {
                 {/* Quick Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     <Autocomplete
+                        sx={{ flex: 1 }}
                         id="free-solo-demo"
                         freeSolo
                         options={data}
                         getOptionLabel={(option: any) => option.name?.toString() || ""}
                         onChange={(event, value) => {
-                            if (value && !assignId.includes(value.userId)) {
-                                setAssignId([...assignId, value.userId]); // Chỉ thêm nếu chưa tồn tại
+                            if (value && !assignToId.includes(value.userId)) {
+                                setAssignToId([...assignToId, value.userId]); // Chỉ thêm nếu chưa tồn tại
                             }
                         }}
-                        renderInput={(params) => 
-                            <TextField 
-                            {...params} 
-                            label="Assigment task to users" 
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={e => {
-                                if(e.key == "Enter") {
-                                    e.preventDefault();
-                                    return;
-                                }
-                            }}
-                        />}
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                label="Assigment task to users"
+                                onChange={(e) => setQuery(e.target.value)}
+                                onKeyDown={e => {
+                                    if (e.key == "Enter") {
+                                        e.preventDefault();
+                                        return;
+                                    }
+                                }}
+                            />}
                     />
                     <FormControl sx={{ flex: 1 }}>
                         <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}
@@ -186,9 +194,14 @@ export const TaskInput = () => {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                 }}
             >
-                {tasks.length ? <List sx={{ minHeight: "70px" }}>
+                {tasks?.length ? <List sx={{ minHeight: "70px" }}>
                     {tasks?.map((task, index) => (
-                        <TaskMenuDropdown task={task} index={index} handleDeleteTask={handleDeleteTask} />
+                        <TaskMenuDropdown
+                            task={task}
+                            index={index}
+                            handleDeleteTask={handleDeleteTask}
+                            setTasks={setTasks}
+                        />
                     ))}
                 </List> : <></>
                 }

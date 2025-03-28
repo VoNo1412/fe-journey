@@ -1,4 +1,4 @@
-import { Task, User } from "../common/interface";
+import { ISubTask, Task, User } from "../common/interface";
 import axios from "./axios";
 
 const endpoint = {
@@ -6,7 +6,7 @@ const endpoint = {
     category: "category",
     signup: "signup",
     login: "login",
-    user: "user"
+    user: "user",
 }
 
 // Task
@@ -46,6 +46,19 @@ const TASK_API = {
     },
 }
 
+
+const SUB_TASK_API = {
+    apiPostSubTask: async (data: ISubTask) => { 
+        try {
+            const response = await axios.post(`/${endpoint.task}/sub`, data);
+            console.log('response:', response);
+            return { statusCode: 200, data: response.data };
+        } catch (error) {
+            console.log("check error: ", error);
+            throw new Error(error as any);
+        }
+    },  // Get all subtasks of a task
+}
 // category
 const CATEGORY_API = {
     apiGetCategories: async () => {
@@ -91,5 +104,6 @@ export {
     TASK_API,
     CATEGORY_API,
     AUTH_API,
-    endpoint
+    endpoint,
+    SUB_TASK_API
 };

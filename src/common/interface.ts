@@ -1,13 +1,23 @@
 interface Task {
-    taskId?: number;
-    title: string; 
-    categoryId: number | null; 
+    taskId?: number | any;
+    title: string;
+    categoryId: number | null;
     time?: null | string;
     isCompleted: boolean;
     userId?: string;
     nameCategory?: string;
     color?: string;
     taskUserId?: number | any;
+    subTasks?: any[] | any;
+}
+
+interface ISubTask {
+    title: string;
+    isCompleted?: boolean;
+    taskId: number;
+    status: string;
+    description: string;
+    summurize?: string;
 }
 
 interface Category {
@@ -29,7 +39,8 @@ interface IAuthContext {
 
 export type {
     IAuthContext,
-    Task, 
-    Category, 
-    User
+    Task,
+    Category,
+    User,
+    ISubTask
 }

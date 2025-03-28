@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Typography, Box } from "@mui/material";
-import axios from "axios";
-const TaskPopupForm = ({ open, handleClose }: any) => {
-  const [formData, setFormData] = useState({
+import React from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Box } from "@mui/material";
+import { SUB_TASK_API, TASK_API } from "../../api/api";
+import useAuth from "../../hooks/useAuth";
+
+
+const TaskPopupForm = ({ open, handleClose, taskId, setTasks }: any) => {
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { auth } = useAuth(); // Assuming you have a useAuth hook to get the auth context
+  const [formData, setFormData] = React.useState({
     title: "",
     description: "",
-    category: "",
     status: "Pending",
+    isCompleted: false,
   });
 
   const statuses = ["Pending", "In Progress", "Completed"];
-
   const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -18,26 +22,24 @@ const TaskPopupForm = ({ open, handleClose }: any) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/task", formData);
-      console.log("Task Created:", response.data);
-      alert("Task Created Successfully!");
-      setFormData({ title: "", description: "", category: "", status: "Pending" });
-      handleClose(); // Close the popup
-    } catch (error) {
+      const response = await SUB_TASK_API.apiPostSubTask({ ...formData, taskId });
+      if (response?.statusCode !== 200) return;
+      const data = await TASK_API.apiGetTasks(auth?.user.userId); // Refresh the task list
+      setTasks(data); // Update the task list in the parent component
+      setFormData({ title: "", description: "", status: "Pending", isCompleted: false });
+      handleClose(!open); // Close the popup
+    } catch (error: any) {
       console.error("Error creating task:", error);
-      alert("Failed to create task.");
     }
   };
 
-  console.log(formData);
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <Box sx={{ background: "var(--third-light-bgColor)" }}>
-        <DialogTitle sx={{color: "var(--primary-color)"}}>Create SubTask</DialogTitle>
+        <DialogTitle sx={{ color: "var(--primary-color)" }}>Create SubTask</DialogTitle>
         <DialogContent>
-          <TextField label="Title" name="title" value={formData.title} onChange={handleChange} required fullWidth margin="dense" />
+          <TextField label="Title" name="title" inputRef={inputRef} onChange={handleChange} required fullWidth margin="dense" />
           <TextField label="Description" name="description" value={formData.description} onChange={handleChange} fullWidth multiline rows={3} margin="dense" />
-          {/* <TextField label="Category" name="category" value={formData.category} onChange={handleChange} fullWidth margin="dense" /> */}
           <TextField select label="Status" name="status" value={formData.status} onChange={handleChange} fullWidth margin="dense">
             {statuses.map((status) => (
               <MenuItem key={status} value={status}>
@@ -47,8 +49,8 @@ const TaskPopupForm = ({ open, handleClose }: any) => {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">Create Task</Button>
+          <Button onClick={() => handleClose(!open)} color="secondary">Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">Create Subtask</Button>
         </DialogActions>
       </Box>
     </Dialog>
