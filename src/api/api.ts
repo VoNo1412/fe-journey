@@ -47,8 +47,20 @@ const TASK_API = {
 }
 
 
+
+
 const SUB_TASK_API = {
-    apiPostSubTask: async (data: ISubTask) => { 
+    // apiPostSubTask: async (userId: number) => {
+    //     try {
+    //         const response = await axios.post(`/${endpoint.task}/sub`, data);
+    //         console.log('response:', response);
+    //         return { statusCode: 200, data: response.data };
+    //     } catch (error) {
+    //         console.log("check error: ", error);
+    //         throw new Error(error as any);
+    //     }
+    // },
+    apiPostSubTask: async (data: ISubTask) => {
         try {
             const response = await axios.post(`/${endpoint.task}/sub`, data);
             console.log('response:', response);
@@ -57,7 +69,27 @@ const SUB_TASK_API = {
             console.log("check error: ", error);
             throw new Error(error as any);
         }
-    },  // Get all subtasks of a task
+    },
+    apiUpdateSummarize: async (id: number, summarize: string) => {
+        try {
+            const response = await axios.put(`/${endpoint.task}/sub/${id}`, {summarize});
+            console.log('response:', response);
+            return { statusCode: 200, data: response.data };
+        } catch (error) {
+            console.log("check error: ", error);
+            throw new Error(error as any);
+        }
+    },
+    apiDeleteSubTask: async (id: number) => {
+        try {
+            const response = await axios.delete(`/${endpoint.task}/sub/${id}`);
+            console.log('response:', response);
+            return { statusCode: 200, data: response.data };
+        } catch (error) {
+            console.log("check error: ", error);
+            throw new Error(error as any);
+        }
+    },
 }
 // category
 const CATEGORY_API = {

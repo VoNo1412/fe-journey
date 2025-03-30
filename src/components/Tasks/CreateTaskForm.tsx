@@ -22,9 +22,9 @@ const TaskPopupForm = ({ open, handleClose, taskId, setTasks }: any) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await SUB_TASK_API.apiPostSubTask({ ...formData, taskId });
+      const response = await SUB_TASK_API.apiPostSubTask({ ...formData, taskId, userId: auth.user.id });
       if (response?.statusCode !== 200) return;
-      const data = await TASK_API.apiGetTasks(auth?.user.userId); // Refresh the task list
+      const data = await TASK_API.apiGetTasks(auth?.user.id); // Refresh the task list
       setTasks(data); // Update the task list in the parent component
       setFormData({ title: "", description: "", status: "Pending", isCompleted: false });
       handleClose(!open); // Close the popup

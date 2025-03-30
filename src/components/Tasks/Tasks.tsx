@@ -11,7 +11,6 @@ import useAuth from "../../hooks/useAuth";
 import TaskMenuDropdown from "./components/TaskMenuDropdown";
 import useFetchQuery from "../../hooks/useFetchSearch";
 
-
 export const TaskInput = () => {
     const [tasks, setTasks] = React.useState<Task[]>([]);
     const [category, setCategory] = React.useState<Category[]>([]);
@@ -19,24 +18,23 @@ export const TaskInput = () => {
     const { auth, setAuth } = useAuth();
     const [query, setQuery] = useState("");
     const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
-    const [assignToId, setAssignToId] = useState<number[]>([]);
 
     const [formData, setFormData] = React.useState({
         title: "",
         categoryId: null as null | number,
         isCompleted: false,
-        assignToId: [] as number[]
+        assignUserId: null
     });
 
 
     React.useEffect(() => {
-        if (!auth?.user?.userId) return;
-        const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth.user.userId);
+        if (!auth?.user?.id) return;
+        const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth.user.id);
 
         fetchGetTasks()
             .then((res) => {
                 setTasks(res);
-                setAuth({ ...auth, totalTasks: res.totalTasks });
+                setAuth({ ...auth, totalTasks: res.length });
             })
             .catch((err) => {
                 console.log(err);
@@ -46,42 +44,58 @@ export const TaskInput = () => {
         fetchGetCategories()
             .then((res) => {
                 setCategory(res);
-                setFormData({ ...formData, categoryId: res[0].categoryId })
+                setFormData({ ...formData, categoryId: res[0].id })
             })
             .catch((err) => {
                 console.log(err);
             });
-    }, [auth?.user?.userId]); // Chỉ chạy khi userId thay đổi
+    }, [auth?.user?.id]); // Chỉ chạy khi userId thay đổi
 
     const handleSubmitTask = async (e: any) => {
         e.preventDefault();
         try {
-            const data = await TASK_API.apiCreateTask({ ...formData, userId: auth.user.userId, });
+            const data = await TASK_API.apiCreateTask({ ...formData });
             if (data?.statusCode !== 200) return;
-            const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            setTasks((prevTasks) => [...prevTasks, { ...formData, taskId: data.data.taskId, time: currentTime }]); 
+            const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth?.user?.id);
+            fetchGetTasks()
+                .then((res) => {
+                    setTasks(res);
+                    setAuth({ ...auth, totalTasks: res.length });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
             setFormData({ ...formData, [e.target.name]: e.target.value })
-            setFormData({ title: "", categoryId: formData.categoryId, isCompleted: false, assignToId: [] });
+            setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
         } catch (error) {
             console.error("Error creating task:", error);
-            alert("Failed to create task.");
+            alert("Failed to create task." + error);
         };
     }
-
+    console.log(tasks);
     const handleInputChange = (e: any) => {
         setFormData((prevData) => ({
             ...prevData,
-            [e.target.name]: e.target.value,
-            title: inputRef.current?.value,
-            assignToId
-        } as any));
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleSelectUser = (e: any, value: any) => {
+        console.log("value", e.target, value)
+        if (value?.id) {
+            setFormData({
+                ...formData,
+                userId: value.id,
+                assignUserId: auth?.user.id
+            } as any)
+        } else {
+            setFormData(prev => ({ ...prev, userId: auth?.user.id }))
+        }
     };
 
     const handleDeleteTask = async (taskId: number) => {
         try {
             // Xóa task từ danh sách tasks
-            console.log(taskId)
             await TASK_API.apiDeleteTaskUser(taskId);
             setTasks((prevTasks) => prevTasks.filter((task) => task.taskId !== taskId));
         } catch (error) {
@@ -89,6 +103,8 @@ export const TaskInput = () => {
             alert("delete task failure.");
         }
     }
+
+    // console.log('this is data:', data);
 
     return (
         <>
@@ -145,14 +161,9 @@ export const TaskInput = () => {
                         sx={{ flex: 1 }}
                         id="free-solo-demo"
                         freeSolo
-                        options={data}
-                        getOptionLabel={(option: any) => option.name?.toString() || ""}
-                        onChange={(event, value) => {
-                            if (value && !assignToId.includes(value.userId)) {
-                                console.log(event, value);
-                                setAssignToId([...assignToId, value.userId]); // Chỉ thêm nếu chưa tồn tại
-                            }
-                        }}
+                        options={data.filter((x: any) => x.id !== auth.user.id)}
+                        getOptionLabel={(option: any) => option?.username || ""}
+                        onChange={handleSelectUser}
                         renderInput={(params) =>
                             <TextField
                                 {...params}
@@ -164,7 +175,7 @@ export const TaskInput = () => {
                                         return;
                                     }
                                 }}
-                            />}
+                        />}
                     />
                     <FormControl sx={{ flex: 1 }}>
                         <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}
@@ -178,7 +189,7 @@ export const TaskInput = () => {
                             sx={chipStyle}
                             defaultValue={formData.categoryId}
                         >
-                            {category.map((item, index) => <MenuItem key={index} value={item.categoryId ?? ''}>
+                            {category.map((item: any, index) => <MenuItem key={index} value={item?.id ?? ''}>
                                 {item.name}
                             </MenuItem>)}
                         </Select>

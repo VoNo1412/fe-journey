@@ -9,15 +9,18 @@ interface Task {
     color?: string;
     taskUserId?: number | any;
     subTasks?: any[] | any;
+    assigned?: any;
 }
 
 interface ISubTask {
+    id?: number;
     title: string;
     isCompleted?: boolean;
     taskId: number;
     status: string;
     description: string;
-    summurize?: string;
+    summarize?: string;
+    userId: number;
 }
 
 interface Category {

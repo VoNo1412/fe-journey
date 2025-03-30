@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, List, ListItem, Box } from "@mui/material";
+import useAuth from "../hooks/useAuth";
 
 const meetings = [
   {
@@ -18,6 +19,10 @@ const meetings = [
 ];
 
 const MeetingSchedule = () => {
+  const { auth } = useAuth();
+  // const {}
+  
+
   return (
     <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end", bgcolor: "var(--primary-deep-bgColor)", WebkitBoxShadow: "0 10px 10px powderblue", color: "var(--primary-color)" }}>
       <CardContent>
