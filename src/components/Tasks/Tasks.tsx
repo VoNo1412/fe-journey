@@ -149,6 +149,7 @@ export const TaskInput = () => {
                         getOptionLabel={(option: any) => option.name?.toString() || ""}
                         onChange={(event, value) => {
                             if (value && !assignToId.includes(value.userId)) {
+                                console.log(event, value);
                                 setAssignToId([...assignToId, value.userId]); // Chỉ thêm nếu chưa tồn tại
                             }
                         }}

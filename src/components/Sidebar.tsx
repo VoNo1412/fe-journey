@@ -18,14 +18,12 @@ export default function Sidebar() {
     const [categoryIndex, setCategoryIndex] = React.useState(null);
 
     const handleListItemClick = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
     ) => {
         setSelectedIndex(index);
     };
 
     const handleListCategoryItemClick = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
     ) => {
         console.log('index: ', index, categoryItems)
@@ -48,7 +46,7 @@ export default function Sidebar() {
                             key={index}
                             className={selectedIndex == index ? 'active' : ''}
                             selected={selectedIndex === index}
-                            onClick={(event) => handleListItemClick(event, index)}
+                            onClick={() => handleListItemClick(index)}
                         >
                             <ListItemIcon>
                                 {item.icon}
@@ -67,7 +65,7 @@ export default function Sidebar() {
                             key={index}
                             className={categoryIndex == index ? 'active' : ''}
                             selected={categoryIndex === index}
-                            onClick={(event) => handleListCategoryItemClick(event, index)}
+                            onClick={() => handleListCategoryItemClick(index)}
                         >
                             <ListItemIcon>
                                 {item.icon}
