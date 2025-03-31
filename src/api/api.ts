@@ -39,6 +39,7 @@ const TASK_API = {
     apiDeleteTaskUser: async (taskUserId: number) => {
         try {
             const response = await axios.delete(`/${endpoint.task}/${taskUserId}`);
+            console.log(response);
             return response.data;
         } catch (error) {
             throw new Error(error as any);
@@ -50,16 +51,16 @@ const TASK_API = {
 
 
 const SUB_TASK_API = {
-    // apiPostSubTask: async (userId: number) => {
-    //     try {
-    //         const response = await axios.post(`/${endpoint.task}/sub`, data);
-    //         console.log('response:', response);
-    //         return { statusCode: 200, data: response.data };
-    //     } catch (error) {
-    //         console.log("check error: ", error);
-    //         throw new Error(error as any);
-    //     }
-    // },
+    getAllSubTasks: async (userId: number) => {
+        try {
+            const response = await axios.get(`/${endpoint.task}/sub/${userId}`);
+            console.log('response:', response);
+            return { statusCode: 200, data: response.data.data };
+        } catch (error) {
+            console.log("check error: ", error);
+            throw new Error(error as any);
+        }
+    },
     apiPostSubTask: async (data: ISubTask) => {
         try {
             const response = await axios.post(`/${endpoint.task}/sub`, data);

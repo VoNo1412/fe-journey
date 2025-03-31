@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import MeetingSchedule from "../components/MeetingSchedual";
-import { TaskInput } from "../components/Tasks/Tasks";
+import { Tasks } from "../components/Tasks/Tasks";
 import useAuth from "../hooks/useAuth";
 import getVietnamTimePeriod from "../common/time";
 import Header from "../components/Header";
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
               <MeetingSchedule />
             </Box>
           </Box>
-          <TaskInput />
+          <Tasks />
         </Box>
         <SidebarRight />
       </Box>

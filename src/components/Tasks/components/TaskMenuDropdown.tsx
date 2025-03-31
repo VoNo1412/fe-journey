@@ -2,17 +2,19 @@ import { ListItem, ListItemButton, Checkbox, Box, Typography, styled, TextareaAu
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import { ISubTask, Task } from "../../../common/interface";
-import React, { useEffect } from "react";
+import React from "react";
 import TaskPopupForm from "../CreateTaskForm";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SUB_TASK_API, TASK_API } from "../../../api/api";
+import { SUB_TASK_API } from "../../../api/api";
 import useAuth from "../../../hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store/store";
+import { fetchTasks } from "../../../store/taskSlice";
 
 interface TaskMenuDropdownProps {
     task: Task;
     index: number;
     handleDeleteTask: (taskId: number) => void;
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
 const SubTasks = styled('div')({
@@ -24,11 +26,11 @@ const SubTasks = styled('div')({
     borderRadius: "24px"
 });
 
-const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handleDeleteTask, setTasks }) => {
+const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handleDeleteTask }) => {
     const buttonRef = React.useRef<HTMLButtonElement | null>(null);
     const [open, setOpen] = React.useState<boolean>(false);
     const { auth } = useAuth();
-
+    const dispatch = useDispatch<AppDispatch>();
     const handleClose = (e: Event | React.SyntheticEvent) => {
         if (buttonRef?.current?.contains(e.target as HTMLElement)) {
             return;
@@ -40,26 +42,19 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
         await SUB_TASK_API.apiDeleteSubTask(subTaskId)
             .then(res => {
                 if (res.statusCode != 200) return;
-                const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth?.user?.id);
-                fetchGetTasks()
-                    .then((res) => {
-                        setTasks(res);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                dispatch(fetchTasks(auth.user.id));
             })
             .catch(err => console.error(err));
     }
 
     const enterSummarize = async (id: number | undefined, summarize: string) => {
-        if(!id) return;
+        if (!id) return;
         await SUB_TASK_API.apiUpdateSummarize(id, summarize)
-        .then(res => {
-            if (res.statusCode != 200) return;
-            alert('success');
-        })
-        .catch(err => console.error(err));
+            .then(res => {
+                if (res.statusCode != 200) return;
+                alert('success');
+            })
+            .catch(err => console.error(err));
     }
 
 
@@ -104,7 +99,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                     </Box>
                 </ListItemButton>
 
-                <TaskPopupForm open={open} handleClose={handleClose} taskId={task.taskId} setTasks={setTasks} />
+                <TaskPopupForm open={open} handleClose={handleClose} taskId={task.taskId} />
             </ListItem>
             {task?.subTasks?.length > 0 && task?.subTasks?.map((sub: ISubTask, index: number) => (
                 <SubTasks key={index}>

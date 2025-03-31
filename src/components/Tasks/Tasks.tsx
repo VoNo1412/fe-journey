@@ -4,20 +4,25 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { List } from "@mui/material";
-import { Category, Task } from "../../common/interface";
+import { Category } from "../../common/interface";
 import React, { useState } from "react";
-import { CATEGORY_API, endpoint, TASK_API } from "../../api/api";
+import { CATEGORY_API, endpoint } from "../../api/api";
 import useAuth from "../../hooks/useAuth";
 import TaskMenuDropdown from "./components/TaskMenuDropdown";
 import useFetchQuery from "../../hooks/useFetchSearch";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { createTask, deleteTask, fetchTasks } from "../../store/taskSlice";
 
-export const TaskInput = () => {
-    const [tasks, setTasks] = React.useState<Task[]>([]);
+export const Tasks = () => {
     const [category, setCategory] = React.useState<Category[]>([]);
     const inputRef = React.useRef<HTMLInputElement | null>(null); // Define the
-    const { auth, setAuth } = useAuth();
+    const { auth } = useAuth();
     const [query, setQuery] = useState("");
     const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
+    const dispatch = useDispatch<AppDispatch>();
+    const { tasks, loading } = useSelector((state: RootState) => state.tasks);
+
 
     const [formData, setFormData] = React.useState({
         title: "",
@@ -29,16 +34,7 @@ export const TaskInput = () => {
 
     React.useEffect(() => {
         if (!auth?.user?.id) return;
-        const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth.user.id);
-
-        fetchGetTasks()
-            .then((res) => {
-                setTasks(res);
-                setAuth({ ...auth, totalTasks: res.length });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        dispatch(fetchTasks(auth.user.id));
 
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
         fetchGetCategories()
@@ -49,22 +45,15 @@ export const TaskInput = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [auth?.user?.id]); // Chỉ chạy khi userId thay đổi
+    }, [auth?.user?.id, dispatch]); // Chỉ chạy khi userId thay đổi
 
     const handleSubmitTask = async (e: any) => {
         e.preventDefault();
         try {
-            const data = await TASK_API.apiCreateTask({ ...formData });
-            if (data?.statusCode !== 200) return;
-            const fetchGetTasks = async () => await TASK_API.apiGetTasks(auth?.user?.id);
-            fetchGetTasks()
-                .then((res) => {
-                    setTasks(res);
-                    setAuth({ ...auth, totalTasks: res.length });
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            if (!formData.title.trim()) return;
+            dispatch(createTask({ ...formData }))
+                .unwrap()
+                .then(() => dispatch(fetchTasks(auth.user.id))); // Cập nhật danh sách sau khi xoá;
             setFormData({ ...formData, [e.target.name]: e.target.value })
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
         } catch (error) {
@@ -72,7 +61,7 @@ export const TaskInput = () => {
             alert("Failed to create task." + error);
         };
     }
-    console.log(tasks);
+
     const handleInputChange = (e: any) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -93,18 +82,11 @@ export const TaskInput = () => {
         }
     };
 
-    const handleDeleteTask = async (taskId: number) => {
-        try {
-            // Xóa task từ danh sách tasks
-            await TASK_API.apiDeleteTaskUser(taskId);
-            setTasks((prevTasks) => prevTasks.filter((task) => task.taskId !== taskId));
-        } catch (error) {
-            console.error("Error creating task:", error);
-            alert("delete task failure.");
-        }
-    }
-
-    // console.log('this is data:', data);
+    const handleDeleteTask = (taskId: number) => {
+        dispatch(deleteTask(taskId))
+            .unwrap()
+            .then(() => dispatch(fetchTasks(auth.user.id))); // Cập nhật danh sách sau khi xoá
+    };
 
     return (
         <>
@@ -175,7 +157,7 @@ export const TaskInput = () => {
                                         return;
                                     }
                                 }}
-                        />}
+                            />}
                     />
                     <FormControl sx={{ flex: 1 }}>
                         <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}
@@ -206,13 +188,13 @@ export const TaskInput = () => {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                 }}
             >
+                {loading ? <p>Loading tasks...</p> : null}
                 {tasks?.length ? <List sx={{ minHeight: "70px" }}>
                     {tasks?.map((task, index) => (
                         <TaskMenuDropdown
                             task={task}
                             index={index}
                             handleDeleteTask={handleDeleteTask}
-                            setTasks={setTasks}
                         />
                     ))}
                 </List> : <></>

@@ -1,10 +1,13 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Box } from "@mui/material";
-import { SUB_TASK_API, TASK_API } from "../../api/api";
+import { SUB_TASK_API } from "../../api/api";
 import useAuth from "../../hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { fetchTasks } from "../../store/taskSlice";
 
 
-const TaskPopupForm = ({ open, handleClose, taskId, setTasks }: any) => {
+const TaskPopupForm = ({ open, handleClose, taskId }: any) => {
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { auth } = useAuth(); // Assuming you have a useAuth hook to get the auth context
   const [formData, setFormData] = React.useState({
@@ -13,6 +16,7 @@ const TaskPopupForm = ({ open, handleClose, taskId, setTasks }: any) => {
     status: "Pending",
     isCompleted: false,
   });
+  const dispatch = useDispatch<AppDispatch>();
 
   const statuses = ["Pending", "In Progress", "Completed"];
   const handleChange = (e: any) => {
@@ -24,8 +28,7 @@ const TaskPopupForm = ({ open, handleClose, taskId, setTasks }: any) => {
     try {
       const response = await SUB_TASK_API.apiPostSubTask({ ...formData, taskId, userId: auth.user.id });
       if (response?.statusCode !== 200) return;
-      const data = await TASK_API.apiGetTasks(auth?.user.id); // Refresh the task list
-      setTasks(data); // Update the task list in the parent component
+      dispatch(fetchTasks(auth.user.id));
       setFormData({ title: "", description: "", status: "Pending", isCompleted: false });
       handleClose(!open); // Close the popup
     } catch (error: any) {
