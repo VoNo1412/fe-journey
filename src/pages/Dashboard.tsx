@@ -2,18 +2,19 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import MeetingSchedule from "../components/MeetingSchedual";
 import { Tasks } from "../components/Tasks/Tasks";
-import useAuth from "../hooks/useAuth";
 import getVietnamTimePeriod from "../common/time";
 import Header from "../components/Header";
 import SidebarRight from "../components/SidebarRight";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const Dashboard: React.FC = () => {
-  const { auth } = useAuth();
+  const { total } = useSelector((state: RootState) => state.tasks);
 
   return (
     <>
       <Header />
-      <Box sx={{display: "flex", gap: 3}}>
+      <Box sx={{ display: "flex", gap: 3 }}>
         <Box sx={{ flex: 8, display: "flex", flexDirection: "column", gap: "30px 0" }}>
           <Box sx={{ background: "var(--second-deep-bgColor)", padding: 2, borderRadius: "24px", height: "60%" }}>
             <Box
@@ -26,13 +27,14 @@ const Dashboard: React.FC = () => {
                 borderRadius: "24px",
                 padding: 6,
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                minHeight: "360px"
               }}
             >
               <Typography variant="h4" fontWeight="bold">
                 Good {getVietnamTimePeriod()}
               </Typography>
-              <Typography variant="h6">You have {auth?.totalTasks || 0} tasks today</Typography>
+              <Typography variant="h6">You have {total} tasks today</Typography>
               <MeetingSchedule />
             </Box>
           </Box>

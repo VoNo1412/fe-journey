@@ -1,4 +1,4 @@
-import { TextField, IconButton, Button, Box, InputAdornment, InputLabel, Autocomplete } from "@mui/material";
+import { TextField, IconButton, Button, Box, InputAdornment, InputLabel, Autocomplete, CircularProgress } from "@mui/material";
 import { Send, Add, AccessTime, Event } from "@mui/icons-material";
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -12,7 +12,10 @@ import TaskMenuDropdown from "./components/TaskMenuDropdown";
 import useFetchQuery from "../../hooks/useFetchSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { createTask, deleteTask, fetchTasks } from "../../store/taskSlice";
+import { createTask, deleteTask, fetchTasks, removeTaskOptimistic } from "../../store/taskSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { showNotification } from "../../store/notificationSlice";
 
 export const Tasks = () => {
     const [category, setCategory] = React.useState<Category[]>([]);
@@ -22,6 +25,13 @@ export const Tasks = () => {
     const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
     const dispatch = useDispatch<AppDispatch>();
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
+    const { message, type } = useSelector((state: RootState) => state.notification);
+
+    React.useEffect(() => {
+        if (message) {
+            toast[type as "success" | "error" | "info" | "warning"](message);
+        }
+    }, [message, type]);
 
 
     const [formData, setFormData] = React.useState({
@@ -52,8 +62,8 @@ export const Tasks = () => {
         try {
             if (!formData.title.trim()) return;
             dispatch(createTask({ ...formData }))
-                .unwrap()
-                .then(() => dispatch(fetchTasks(auth.user.id))); // Cập nhật danh sách sau khi xoá;
+            await dispatch(fetchTasks(auth.user.id))
+            dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, [e.target.name]: e.target.value })
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
         } catch (error) {
@@ -82,14 +92,20 @@ export const Tasks = () => {
         }
     };
 
-    const handleDeleteTask = (taskId: number) => {
-        dispatch(deleteTask(taskId))
-            .unwrap()
-            .then(() => dispatch(fetchTasks(auth.user.id))); // Cập nhật danh sách sau khi xoá
+    const handleDeleteTask = async (taskId: number) => {
+        try {
+            dispatch(removeTaskOptimistic(taskId)); // Remove from UI immediately
+            dispatch(showNotification({ message: "Delete task successfully!", type: "success" }));
+            await dispatch(deleteTask(taskId)).unwrap(); // Ensure task is deleted before fetching    
+        } catch (error) {
+            dispatch(showNotification({ message: "Failed to delete task.", type: "error" }));
+        }
     };
 
     return (
         <>
+            <ToastContainer position="top-right" autoClose={1000} />
+
             <Box
                 sx={{
                     display: "flex",
@@ -188,17 +204,19 @@ export const Tasks = () => {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                 }}
             >
-                {loading ? <p>Loading tasks...</p> : null}
-                {tasks?.length ? <List sx={{ minHeight: "70px" }}>
-                    {tasks?.map((task, index) => (
-                        <TaskMenuDropdown
-                            task={task}
-                            index={index}
-                            handleDeleteTask={handleDeleteTask}
-                        />
-                    ))}
-                </List> : <></>
+                {(loading && !tasks?.length) ? <Box sx={{ textAlign: "center" }}><CircularProgress /></Box> :
+                    <List sx={{ minHeight: "70px" }}>
+                        {tasks?.map((task, index) => (
+                            <TaskMenuDropdown
+                                key={index}
+                                task={task}
+                                index={index}
+                                handleDeleteTask={handleDeleteTask}
+                            />
+                        ))}
+                    </List>
                 }
+
             </Box>
         </>
     );

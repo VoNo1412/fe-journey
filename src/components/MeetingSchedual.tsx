@@ -26,12 +26,15 @@ const MeetingSchedule = () => {
     if (!auth?.user?.id) return;
     const fetchSubTasks = async () => await SUB_TASK_API.getAllSubTasks(auth?.user.id);
     fetchSubTasks().then(res => setSubTask(res.data)).catch(err => console.error(err));
+
+
+    
   }, [auth?.user?.id]);
 
   console.log("check: ", subTasks);
   return (
     <>
-      {subTasks?.length &&
+      {subTasks?.length ?
         <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end", bgcolor: "var(--primary-deep-bgColor)", WebkitBoxShadow: "0 10px 10px powderblue", color: "var(--primary-color)", minWidth: "300px", minHeight: "200px" }}>
           <CardContent>
             <Typography variant="h6" fontWeight="bold">
@@ -63,7 +66,8 @@ const MeetingSchedule = () => {
             </List>
           </CardContent>
         </Card>
-      } : <></>
+       : <></>}
+       
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { ISubTask, Task, User } from "../common/interface";
+import { ISubTask, User } from "../common/interface";
 import axios from "./axios";
 
 const endpoint = {
@@ -7,44 +7,6 @@ const endpoint = {
     signup: "signup",
     login: "login",
     user: "user",
-}
-
-// Task
-const TASK_API = {
-    apiGetTasks: async (userId: number) => {
-        try {
-            const response = await axios.get(`/${endpoint.task}/${userId}`);
-            return response.data.data;
-        } catch (error) {
-            throw new Error(error as any);
-        }
-    },
-    apiCreateTask: async (data: Task) => {
-        try {
-            console.log('data: ', data);
-            const response = await axios.post(`/${endpoint.task}`, data);
-            return response.data;
-        } catch (error) {
-            throw new Error(error as any);
-        }
-    },
-    apiUpdateTask: async (data: Task) => {
-        try {
-            const response = await axios.put(`/${endpoint.task}/${data.taskId}`, data);
-            return response.data;
-        } catch (error) {
-            throw new Error(error as any);
-        }
-    },
-    apiDeleteTaskUser: async (taskUserId: number) => {
-        try {
-            const response = await axios.delete(`/${endpoint.task}/${taskUserId}`);
-            console.log(response);
-            return response.data;
-        } catch (error) {
-            throw new Error(error as any);
-        }
-    },
 }
 
 
@@ -120,7 +82,7 @@ const AUTH_API = {
             const response = await axios.post(`/auth/${endpoint.login}`, user);
             return response.data;
         } catch (error) {
-            throw new Error(error as any);
+            throw error;
         }
     },
 
@@ -134,7 +96,6 @@ const AUTH_API = {
     }
 }
 export {
-    TASK_API,
     CATEGORY_API,
     AUTH_API,
     endpoint,

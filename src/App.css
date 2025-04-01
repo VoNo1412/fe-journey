@@ -27,6 +27,8 @@
 .MuiInputBase-input,
 .css-1umw9bq-MuiSvgIcon-root,
 .css-lohd6h-MuiSvgIcon-root-MuiSelect-icon
+.MuiListItemIcon-root,
+.MuiCheckbox-root 
 {
   color: var(--primary-color) !important;
 }
@@ -58,7 +60,6 @@
 
 body {
   width: 100%;
-  height: 100vh;
   color: var(--primary-color) !important;
 }
 
