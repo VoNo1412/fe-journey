@@ -48,7 +48,7 @@ const LoginPage = () => {
       alignItems="center"
       justifyContent="center"
       minHeight="100vh"
-      sx={{background: "radial-gradient(#a43f3f, transparent);"}}
+      sx={{ background: "radial-gradient(#a43f3f, transparent);" }}
       p={2}
     >
       <Box
