@@ -91,7 +91,7 @@ const AUTH_API = {
             const response = await axios.post(`/auth/me`);
             return response.data;
         } catch (error) {
-            throw new Error(error as any);
+            throw error
         }
     }
 }

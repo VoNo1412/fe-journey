@@ -61,8 +61,7 @@ export const Tasks = () => {
         e.preventDefault();
         try {
             if (!formData.title.trim()) return;
-            dispatch(createTask({ ...formData }))
-            await dispatch(fetchTasks(auth.user.id))
+            dispatch(createTask({ ...formData })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, [e.target.name]: e.target.value })
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);

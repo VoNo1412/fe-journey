@@ -27,7 +27,7 @@
 .MuiInputBase-input,
 .css-1umw9bq-MuiSvgIcon-root,
 .css-lohd6h-MuiSvgIcon-root-MuiSelect-icon
-.MuiListItemIcon-root,
+.MuiSvgIcon-root,
 .MuiCheckbox-root 
 {
   color: var(--primary-color) !important;
