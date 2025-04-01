@@ -5,13 +5,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { categoryItems, slideBarItems } from '../constants/icons/constants';
-import { styled, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import LogoImage from "../assets/logo.svg";
-
-const Logo = styled('img')({
-    // borderRadius: '50%',
-});
 
 export default function Sidebar() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -38,7 +34,7 @@ export default function Sidebar() {
         <>
             <div className="side_main" style={{ flex: 2 }}>
                 <Box sx={{marginBottom: "30px"}}>
-                    <Logo src={LogoImage} alt="logo" />
+                    <img src={LogoImage} alt="logo" />
                 </Box>
                 <Box sx={{ width: '100%', bgcolor: 'var(--third-deep-bgColor)', borderRadius: '24px' }}>
                     <List component="nav" aria-label="slidebar">

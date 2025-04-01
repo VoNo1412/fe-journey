@@ -1,4 +1,4 @@
-import { ListItem, ListItemButton, Checkbox, Box, Typography, styled, TextareaAutosize } from "@mui/material";
+import { ListItem, ListItemButton, Checkbox, Box, Typography, TextareaAutosize } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import { ISubTask, Task } from "../../../common/interface";
@@ -16,15 +16,6 @@ interface TaskMenuDropdownProps {
     index: number;
     handleDeleteTask: (taskId: number) => void;
 }
-
-const SubTasks = styled('div')({
-    background: "var(--third-light-bgColor)",
-    width: "90%",
-    color: "var(--primary-color)",
-    padding: "20px",
-    margin: "0 60px",
-    borderRadius: "24px"
-});
 
 const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handleDeleteTask }) => {
     const buttonRef = React.useRef<HTMLButtonElement | null>(null);
@@ -102,7 +93,14 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                 <TaskPopupForm open={open} handleClose={handleClose} taskId={task.taskId} />
             </ListItem>
             {task?.subTasks?.length > 0 && task?.subTasks?.map((sub: ISubTask, index: number) => (
-                <SubTasks key={index}>
+                <Box key={index} sx={{
+                    background: "var(--third-light-bgColor)",
+                    width: "90%",
+                    color: "var(--primary-color)",
+                    padding: "20px",
+                    margin: "0 60px",
+                    borderRadius: "24px"
+                }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography variant="h5">Title: {sub.title} </Typography>
                         <DeleteIcon
@@ -131,7 +129,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                     />
 
 
-                </SubTasks>
+                </Box>
             ))
             }
         </>

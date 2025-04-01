@@ -4,7 +4,6 @@ import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import RequireAuth from "./components/Auth/RequireAuth";
 import Layout from "./pages/Layouts/Layout";
-import Profile from "./pages/Profile";
 import LearningRoadmap from "./pages/TestLayout";
 
 function Home() {
@@ -25,7 +24,6 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<LearningRoadmap />} />
-        <Route path="/profile" element={<Profile />} />
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
