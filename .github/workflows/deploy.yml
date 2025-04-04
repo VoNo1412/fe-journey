@@ -16,7 +16,7 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh  # Create the .ssh directory
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa  # Write private key from GitHub Secret
+        echo "${{ secrets.FE_JOURNEY_AWS }}" > ~/.ssh/id_rsa  # Write private key from GitHub Secret
         chmod 600 ~/.ssh/id_rsa  # Set proper permissions for the private key
 
     - name: Add SSH known hosts
