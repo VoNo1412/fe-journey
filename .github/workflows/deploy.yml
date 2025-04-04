@@ -30,6 +30,7 @@ jobs:
           git pull origin master  # Pull the latest code from the master branch
           npm install  # Install dependencies
           npm run build  # Build the production version of the app
+          sudo rm -rf /var/www/html/*
           sudo cp -r dist/* /var/www/html/  # Copy the build output to the web server directory
           sudo systemctl restart nginx  # Restart Nginx or your server if needed
         EOF
