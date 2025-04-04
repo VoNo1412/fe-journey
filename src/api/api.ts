@@ -73,7 +73,6 @@ const AUTH_API = {
     apiLogin: async (user: User) => {
         try {
             const response = await axios.post(`/auth/${endpoint.login}`, user);
-            console.log('first')
             return response.data;
         } catch (error) {
             throw error;

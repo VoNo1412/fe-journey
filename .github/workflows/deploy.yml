@@ -25,6 +25,7 @@ jobs:
 
     - name: Build project
       run: |
+        echo "VITE_API_URL=${{ secrets.VITE_HOST_BACKEND }}" > .env
         npm install  # Install dependencies
         npm run build  # Build the production version of the app
 
