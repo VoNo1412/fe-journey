@@ -42,7 +42,6 @@ const SUB_TASK_API = {
             const response = await axios.delete(`/${endpoint.task}/sub/${id}`);
             return { statusCode: 200, data: response.data };
         } catch (error) {
-            console.log("check error: ", error);
             throw new Error(error as any);
         }
     },
