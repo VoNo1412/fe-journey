@@ -25,7 +25,8 @@ jobs:
 
     - name: Build project
       run: |
-        echo "VITE_API_URL=${{ secrets.VITE_HOST_BACKEND }}" > .env
+        echo "VITE_HOST_BACKEND=${{ secrets.VITE_HOST_BACKEND }}" > .env
+        cat .env  # 👈 Xem thử đúng chưa
         npm install  # Install dependencies
         npm run build  # Build the production version of the app
 
