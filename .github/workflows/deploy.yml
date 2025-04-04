@@ -26,9 +26,10 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -i ~/.ssh/id_rsa ubuntu@3.0.139.123 << 'EOF'
-          cd /path/to/your/app
+          cd /home/ubuntu/fe-journey  # Navigate to your project directory
           git pull origin master  # Pull the latest code from the master branch
           npm install  # Install dependencies
           npm run build  # Build the production version of the app
+          sudo cp -r dist/* /var/www/html/  # Copy the build output to the web server directory
           sudo systemctl restart nginx  # Restart Nginx or your server if needed
         EOF
