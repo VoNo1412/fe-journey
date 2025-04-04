@@ -1,36 +1,40 @@
-name: Deploy to EC2
-
-on:
-  push:
-    branches:
-      - master  # Run this action when you push to the master branch
-
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Check out your code so the workflow can access it
+      uses: actions/checkout@v2
 
     - name: Setup SSH key
       run: |
-        mkdir -p ~/.ssh  # Create the .ssh directory
-        echo "${{ secrets.FE_JOURNEY_AWS }}" > ~/.ssh/id_rsa  # Write private key from GitHub Secret
-        chmod 600 ~/.ssh/id_rsa  # Set proper permissions for the private key
+        mkdir -p ~/.ssh
+        echo "${{ secrets.FE_JOURNEY_AWS }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
     - name: Add SSH known hosts
       run: |
-        ssh-keyscan -H 3.0.139.123 >> ~/.ssh/known_hosts  # Add EC2 to known hosts for SSH
+        ssh-keyscan -H 3.0.139.123 >> ~/.ssh/known_hosts
 
-    - name: Deploy to EC2
+    - name: Build and Deploy to EC2
       run: |
+        # Build production files
+        npm run build
+        
+        # List files in dist folder before deploying
+        ls -l dist/
+
+        # Deploy files to EC2
         ssh -i ~/.ssh/id_rsa ubuntu@3.0.139.123 << 'EOF'
-          cd /home/ubuntu/fe-journey  # Navigate to your project directory
-          git pull origin master  # Pull the latest code from the master branch
-          npm install  # Install dependencies
-          npm run build  # Build the production version of the app
+          cd /home/ubuntu/fe-journey
+          git pull origin master
+          npm install
+          npm run build
+          
+          # Check contents of dist directory on EC2
+          ls -l /home/ubuntu/fe-journey/dist/
+          
           sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/  # Copy the build output to the web server directory
-          sudo systemctl restart nginx  # Restart Nginx or your server if needed
+          sudo cp -r /home/ubuntu/fe-journey/dist/* /var/www/html/
+          sudo systemctl restart nginx
         EOF
