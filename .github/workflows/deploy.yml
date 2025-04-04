@@ -27,13 +27,14 @@ jobs:
       run: |
         npm install  # Install dependencies
         npm run build  # Build the production version of the app
-        
+
     - name: Deploy to EC2
       run: |
+        # Copy the built files (from 'dist' folder) to the EC2 instance
+        scp -i ~/.ssh/id_rsa -r dist/* ubuntu@3.0.139.123:/var/www/html/
+
+        # SSH into the EC2 instance to restart Nginx
         ssh -i ~/.ssh/id_rsa ubuntu@3.0.139.123 << 'EOF'
-          cd /home/ubuntu/fe-journey  # Navigate to your project directory
-          git pull origin master  # Pull the latest code from the master branch
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/  # Copy the build output to the web server directory
-          sudo systemctl restart nginx  # Restart Nginx or your server if needed
+          # Restart Nginx to serve the new files
+          sudo systemctl restart nginx
         EOF
