@@ -3,41 +3,33 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Run this action when you push to the master branch
+      - master  # Chạy khi push lên nhánh master
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    name: Push to EC2 Instance
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2  # Check out your code so the workflow can access it
+      - name: Checkout the code
+        uses: actions/checkout@v2
 
-    - name: Setup SSH key
-      run: |
-        mkdir -p ~/.ssh  # Create the .ssh directory
-        echo "${{ secrets.FE_JOURNEY_AWS }}" > ~/.ssh/id_rsa  # Write private key from GitHub Secret
-        chmod 600 ~/.ssh/id_rsa  # Set proper permissions for the private key
+      - name: Build the project
+        run: |
+          echo "VITE_HOST_BACKEND=${{ secrets.VITE_HOST_BACKEND }}" > .env
+          cat .env  # Kiểm tra biến môi trường
+          npm install
+          npm run build
 
-    - name: Add SSH known hosts
-      run: |
-        ssh-keyscan -H 3.0.139.123 >> ~/.ssh/known_hosts  # Add EC2 to known hosts for SSH
-
-    - name: Build project
-      run: |
-        echo "VITE_HOST_BACKEND=${{ secrets.VITE_HOST_BACKEND }}" > .env
-        cat .env  # 👈 Xem thử đúng chưa
-        npm install  # Install dependencies
-        npm run build  # Build the production version of the app
-
-    - name: Deploy to EC2
-      run: |
-        # Copy files to a temporary directory on EC2
-        scp -i ~/.ssh/id_rsa -r dist ubuntu@3.0.139.123:/home/ubuntu/fe-journey
-
-        # SSH into EC2 and move the files to the correct location
-        ssh -i ~/.ssh/id_rsa ubuntu@3.0.139.123 << 'EOF'
-          sudo rm -rf /var/www/html/*
-          sudo mv /home/ubuntu/fe-journey/dist/* /var/www/html/
-          sudo systemctl restart nginx  # Restart Nginx to apply the changes
-        EOF
+      - name: Deploy dist folder to EC2
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.FE_JOURNEY_AWS }}
+          REMOTE_HOST: "3.0.139.123"
+          REMOTE_USER: "ubuntu"
+          SOURCE: "dist/"
+          TARGET: "/home/ubuntu/fe-journey"
+          SCRIPT_AFTER: |
+            sudo rm -rf /var/www/html/*
+            sudo mv /home/ubuntu/fe-journey/* /var/www/html/
+            sudo systemctl restart nginx
