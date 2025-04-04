@@ -1,13 +1,14 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import FocusTimer from './FocusTime';
 import { Box } from '@mui/material';
 import { useState } from 'react';
 import dayjs from "dayjs";
+import UserOnline from './Tasks/components/UserOnline';
+import React from 'react';
 
 
-export default function SidebarRight() {
+function SidebarRight() {
     const [date, setDate] = useState(dayjs()); // Default to today
 
     return (
@@ -39,8 +40,10 @@ export default function SidebarRight() {
                     </LocalizationProvider>
 
                 </Box>
-                <FocusTimer />
+                <UserOnline/>
             </div>
         </>
     );
 }
+
+export default React.memo(SidebarRight);

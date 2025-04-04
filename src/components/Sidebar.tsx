@@ -8,6 +8,7 @@ import { categoryItems, slideBarItems } from '../constants/icons/constants';
 import { Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import LogoImage from "../assets/logo.svg";
+import FocusTimer from './FocusTime';
 
 export default function Sidebar() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -33,7 +34,7 @@ export default function Sidebar() {
     return (
         <>
             <div className="side_main" style={{ flex: 2 }}>
-                <Box sx={{marginBottom: "30px"}}>
+                <Box sx={{ marginBottom: "30px" }}>
                     <img src={LogoImage} alt="logo" />
                 </Box>
                 <Box sx={{ width: '100%', bgcolor: 'var(--third-deep-bgColor)', borderRadius: '24px' }}>
@@ -55,7 +56,7 @@ export default function Sidebar() {
                     <Typography variant='body1' style={{ fontWeight: 500 }}>My List</Typography>
                     <AddIcon />
                 </div>
-                <Box sx={{ width: '100%', bgcolor: 'var(--third-deep-bgColor)', borderRadius: '24px' }}>
+                <Box sx={{ width: '100%', bgcolor: 'var(--third-deep-bgColor)', borderRadius: '24px', mb: 3 }}>
                     <List component="nav" aria-label="slidebar">
                         {categoryItems.map((item, index) => (<ListItemButton
                             key={index}
@@ -71,6 +72,8 @@ export default function Sidebar() {
                         </ListItemButton>))}
                     </List>
                 </Box>
+                <FocusTimer />
+
             </div>
         </>
     );

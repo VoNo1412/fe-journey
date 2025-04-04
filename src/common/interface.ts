@@ -40,7 +40,13 @@ interface IAuthContext {
     loading: boolean;
 }
 
+interface IStatusSocket {
+    userId: number;
+    isOnline: boolean;
+}
+
 export type {
+    IStatusSocket,
     IAuthContext,
     Task,
     Category,

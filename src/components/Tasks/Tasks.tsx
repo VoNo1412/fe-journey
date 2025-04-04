@@ -41,11 +41,7 @@ export const Tasks = () => {
         assignUserId: null
     });
 
-
     React.useEffect(() => {
-        if (!auth?.user?.id) return;
-        dispatch(fetchTasks(auth.user.id));
-
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
         fetchGetCategories()
             .then((res) => {
@@ -55,12 +51,17 @@ export const Tasks = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [auth?.user?.id, dispatch]); // Chỉ chạy khi userId thay đổi
+
+        if (!auth?.user?.id) return;
+        dispatch(fetchTasks(auth.user.id));
+    }, []);
 
     const handleSubmitTask = async (e: any) => {
         e.preventDefault();
         try {
             if (!formData.title.trim()) return;
+            console.log("tasks: ", tasks[0])
+            console.log("form_data: ", formData);
             dispatch(createTask({ ...formData })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -155,7 +156,14 @@ export const Tasks = () => {
                 {/* Quick Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     <Autocomplete
-                        sx={{ flex: 1 }}
+                        // sx={{ flex: 1 }}
+                        sx={{
+                            flex: 1,
+                            background: "var(--third-light-bgColor)",
+                            // color: "var(--primary-color)",
+                            borderRadius: "25px",
+                            "& fieldset": { border: "none" },
+                        }}
                         id="free-solo-demo"
                         freeSolo
                         options={data.filter((x: any) => x.id !== auth.user.id)}
@@ -164,7 +172,7 @@ export const Tasks = () => {
                         renderInput={(params) =>
                             <TextField
                                 {...params}
-                                label="Assigment task to users"
+                                label="Assign the task to users"
                                 onChange={(e) => setQuery(e.target.value)}
                                 onKeyDown={e => {
                                     if (e.key == "Enter") {
@@ -173,6 +181,7 @@ export const Tasks = () => {
                                     }
                                 }}
                             />}
+
                     />
                     <FormControl sx={{ flex: 1 }}>
                         <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}

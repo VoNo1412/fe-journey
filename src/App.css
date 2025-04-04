@@ -33,6 +33,14 @@
   color: var(--primary-color) !important;
 }
 
+.textArea::placeholder {
+  color: white;
+  font-family: "Roboto", sans-serif;
+  opacity: 0.8;
+  font-weight: 400;
+  font-size: 15px;
+}
+
 .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill {
   border-radius: 20px;
 }
@@ -118,4 +126,9 @@ input:focus-visible {
 
 .active .css-rizt0-MuiTypography-root {
   font-weight: 800 !important;
+}
+
+.css-1i3faf7-MuiPaper-root-MuiCard-root {
+  background-color: transparent !important;
+  color: var(--primary-color) !important;
 }

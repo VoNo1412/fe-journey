@@ -3,10 +3,10 @@ import { Box, Typography } from "@mui/material";
 import MeetingSchedule from "../components/MeetingSchedual";
 import { Tasks } from "../components/Tasks/Tasks";
 import getVietnamTimePeriod from "../common/time";
-import Header from "../components/Header";
 import SidebarRight from "../components/SidebarRight";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import Header from "../components/Header/Header";
 
 const Dashboard: React.FC = () => {
   const { total } = useSelector((state: RootState) => state.tasks);

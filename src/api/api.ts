@@ -9,14 +9,10 @@ const endpoint = {
     user: "user",
 }
 
-
-
-
 const SUB_TASK_API = {
     getAllSubTasks: async (userId: number) => {
         try {
             const response = await axios.get(`/${endpoint.task}/sub/${userId}`);
-            console.log('response:', response);
             return { statusCode: 200, data: response.data.data };
         } catch (error) {
             console.log("check error: ", error);
@@ -26,7 +22,6 @@ const SUB_TASK_API = {
     apiPostSubTask: async (data: ISubTask) => {
         try {
             const response = await axios.post(`/${endpoint.task}/sub`, data);
-            console.log('response:', response);
             return { statusCode: 200, data: response.data };
         } catch (error) {
             console.log("check error: ", error);
@@ -35,8 +30,7 @@ const SUB_TASK_API = {
     },
     apiUpdateSummarize: async (id: number, summarize: string) => {
         try {
-            const response = await axios.put(`/${endpoint.task}/sub/${id}`, {summarize});
-            console.log('response:', response);
+            const response = await axios.put(`/${endpoint.task}/sub/${id}`, { summarize });
             return { statusCode: 200, data: response.data };
         } catch (error) {
             console.log("check error: ", error);
@@ -46,7 +40,6 @@ const SUB_TASK_API = {
     apiDeleteSubTask: async (id: number) => {
         try {
             const response = await axios.delete(`/${endpoint.task}/sub/${id}`);
-            console.log('response:', response);
             return { statusCode: 200, data: response.data };
         } catch (error) {
             console.log("check error: ", error);
@@ -89,6 +82,15 @@ const AUTH_API = {
     apiGetMe: async () => {
         try {
             const response = await axios.post(`/auth/me`);
+            return response.data;
+        } catch (error) {
+            throw error
+        }
+    },
+
+    apiGetUsers: async () => {
+        try {
+            const response = await axios.get(`/user/list`);
             return response.data;
         } catch (error) {
             throw error

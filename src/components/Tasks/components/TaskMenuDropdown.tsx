@@ -112,13 +112,15 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                     <Typography variant="inherit">Description: {sub.description}</Typography>
                     <TextareaAutosize
                         placeholder="summarize"
+                        className="textArea"
                         style={{
                             width: "100%",
                             margin: "10px 0",
                             borderRadius: "15px",
                             padding: "10px",
                             background: "var(--primary-light-bgColor)",
-                            height: "130px"
+                            height: "130px",
+                            color: "white"
                         }}
                         defaultValue={sub.summarize}
                         onKeyDown={(e: any) => {

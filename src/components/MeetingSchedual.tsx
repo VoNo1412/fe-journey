@@ -26,12 +26,8 @@ const MeetingSchedule = () => {
     if (!auth?.user?.id) return;
     const fetchSubTasks = async () => await SUB_TASK_API.getAllSubTasks(auth?.user.id);
     fetchSubTasks().then(res => setSubTask(res.data)).catch(err => console.error(err));
+  }, []);
 
-
-    
-  }, [auth?.user?.id]);
-
-  console.log("check: ", subTasks);
   return (
     <>
       {subTasks?.length ?
@@ -72,4 +68,4 @@ const MeetingSchedule = () => {
   );
 };
 
-export default MeetingSchedule;
+export default React.memo(MeetingSchedule);

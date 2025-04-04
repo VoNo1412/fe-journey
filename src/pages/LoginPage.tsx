@@ -1,17 +1,19 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
+import { Box, Button, Divider, InputAdornment, TextField, Typography } from "@mui/material";
+// import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import React from "react";
 import { User } from "../common/interface";
 import { AUTH_API } from "../api/api";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import alertProgressFeature from "../common/alert";
+// import alertProgressFeature from "../common/alert";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import "react-toastify/dist/ReactToastify.css";
 import { clearNotification, showNotification } from "../store/notificationSlice";
+import PersonIcon from '@mui/icons-material/Person';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 const LoginPage = () => {
   const { setAuth }: any = useAuth();
@@ -94,9 +96,46 @@ const LoginPage = () => {
             placeholder="Username"
             required
             name="username"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3, mb: 2,
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "transparent", // Transparent background
+                borderRadius: 2,
+                color: "white", // Text color
+                "& fieldset": {
+                  borderColor: "white", // White border color
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc", // Border color on hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ffffff", // Border color on focus
+                },
+              },
+              "& .MuiInputBase-input": {
+                color: "white", // Ensures text inside input is white
+                "&:-webkit-autofill": {
+                  background: "transparent !important", // Transparent background for autofill
+                  color: "white !important", // White text for autofill
+                },
+                "&:-webkit-autofill:focus": {
+                  background: "transparent !important", // Transparent background for autofill on focus
+                },
+              },
+
+            }}
             onChange={handleOnChange}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
+
 
           <TextField
             fullWidth
@@ -105,10 +144,44 @@ const LoginPage = () => {
             placeholder="Password"
             type="password"
             name="password"
-            sx={{ mt: 1, mb: 2 }}
+            sx={{
+              mt: 1, mb: 2,
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "transparent", // Transparent background
+                borderRadius: 2,
+                color: "white", // Text color
+                "& fieldset": {
+                  borderColor: "white", // White border color
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc", // Border color on hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ffffff", // Border color on focus
+                },
+              },
+              "& .MuiInputBase-input": {
+                color: "white", // Ensures text inside input is white
+                "&:-webkit-autofill": {
+                  background: "transparent !important", // Transparent background for autofill
+                  color: "white !important", // White text for autofill
+                },
+                "&:-webkit-autofill:focus": {
+                  background: "transparent !important", // Transparent background for autofill on focus
+                },
+              }
+            }}
             onChange={handleOnChange}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOpenIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
-
           <Button
             fullWidth
             variant="contained"
@@ -132,7 +205,7 @@ const LoginPage = () => {
             {!checkLogin ? "Login" : "Signup"}
           </Button>
 
-          <Button
+          {/* <Button
             fullWidth
             variant="outlined"
             startIcon={<GoogleIcon />}
@@ -150,7 +223,7 @@ const LoginPage = () => {
             sx={{ color: "var(--primary-color)", borderColor: "#D3D3D3" }}
           >
             Continue with Facebook
-          </Button>
+          </Button> */}
         </Box>
       </Box>
     </>
