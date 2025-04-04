@@ -30,11 +30,12 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        # Copy the built files (from 'dist' folder) to the EC2 instance
-        scp -i ~/.ssh/id_rsa -r dist/* ubuntu@3.0.139.123:/var/www/html/
+        # Copy files to a temporary directory on EC2
+        scp -i ~/.ssh/id_rsa -r dist/* ubuntu@3.0.139.123:/tmp/fe-journey/
 
-        # SSH into the EC2 instance to restart Nginx
+        # SSH into EC2 and move the files to the correct location
         ssh -i ~/.ssh/id_rsa ubuntu@3.0.139.123 << 'EOF'
-          # Restart Nginx to serve the new files
-          sudo systemctl restart nginx
+          # Move files to the Nginx directory with sudo
+          sudo mv /tmp/fe-journey/* /var/www/html/
+          sudo systemctl restart nginx  # Restart Nginx to apply the changes
         EOF
