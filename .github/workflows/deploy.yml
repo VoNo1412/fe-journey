@@ -18,6 +18,7 @@ jobs:
         run: |
           echo "VITE_HOST_BACKEND=${{ secrets.VITE_HOST_BACKEND }}" > .env
           cat .env  # Kiểm tra biến môi trường
+          npm ci
           npm run build
 
       - name: Deploy dist folder to EC2
