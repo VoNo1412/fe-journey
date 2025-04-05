@@ -21,12 +21,13 @@
   --seccond-size-icons: 23px;
 }
 
-.MuiPickersDay-root, .MuiDayCalendar-weekDayLabel,.css-16hplv9-MuiButtonBase-root-MuiIconButton-root-MuiPickersCalendarHeader-switchViewButton, .css-xp4e7m-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,.css-1bsiu4i-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button, 
-.css-1c5829p-MuiTypography-root,
-.css-ap712-MuiButtonBase-root-MuiCheckbox-root,
+.MuiPickersDay-root, .MuiDayCalendar-weekDayLabel,
+/* .css-16hplv9-MuiButtonBase-root-MuiIconButton-root-MuiPickersCalendarHeader-switchViewButton, .css-xp4e7m-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,.css-1bsiu4i-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,  */
+/* .css-1c5829p-MuiTypography-root, */
+/* .css-ap712-MuiButtonBase-root-MuiCheckbox-root, */
 .MuiInputBase-input,
-.css-1umw9bq-MuiSvgIcon-root,
-.css-lohd6h-MuiSvgIcon-root-MuiSelect-icon
+/* .css-1umw9bq-MuiSvgIcon-root,
+.css-lohd6h-MuiSvgIcon-root-MuiSelect-icon */
 .MuiSvgIcon-root,
 .MuiCheckbox-root 
 {
@@ -128,7 +129,7 @@ input:focus-visible {
   font-weight: 800 !important;
 }
 
-.css-1i3faf7-MuiPaper-root-MuiCard-root {
-  background-color: transparent !important;
+.MuiCardContent-root {
+  background-color: var(--primary-light-bgColor) !important;
   color: var(--primary-color) !important;
 }

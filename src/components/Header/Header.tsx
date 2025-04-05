@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import { Box, InputBase } from '@mui/material';
+import { Badge, Box, InputBase } from '@mui/material';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import Notification from './component/Notification';
@@ -95,7 +95,10 @@ const Header = () => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <CircleNotificationsIcon sx={{ fontSize: 'var(--primary-size-icons)' }} />
+                            <Badge badgeContent={2} color="primary">
+                                <CircleNotificationsIcon sx={{ fontSize: 'var(--primary-size-icons)' }} />
+                            </Badge>
+                            
                         </button>
                         {
                             open ? <Notification notificationRef={notificationRef} /> : <></>

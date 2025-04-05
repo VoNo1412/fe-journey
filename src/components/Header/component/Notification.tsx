@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Avatar, IconButton, Badge } from "@mui/material";
+import { Card, CardContent, Typography, Avatar, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Box } from "@mui/system";
 
@@ -63,7 +63,6 @@ const NotificationsList = ({notificationRef}: any) => {
                 <Typography variant="h6" color="white">
                     Notifications
                 </Typography>
-                <Badge badgeContent={2} color="primary" />
             </Box>
             {notifications.map((notification) => (
                 <NotificationItem key={notification.id} notification={notification} />
