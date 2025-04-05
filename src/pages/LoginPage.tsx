@@ -129,7 +129,7 @@ const LoginPage = () => {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon />
+                    <PersonIcon sx={{color: "var(--primary-color)"}}/>
                   </InputAdornment>
                 ),
               },
@@ -176,7 +176,7 @@ const LoginPage = () => {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LockOpenIcon />
+                    <LockOpenIcon sx={{color: "var(--primary-color)"}}/>
                   </InputAdornment>
                 ),
               },
