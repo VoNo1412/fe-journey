@@ -8,15 +8,15 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import GridViewIcon from '@mui/icons-material/GridView';
 
 export const slideBarItems = [
-    { name: 'Dashboard', icon: <GridViewIcon /> },
-    { name: 'List', icon: <ListAltRoundedIcon/> },
-    { name: 'Calendar', icon: <CalendarMonthRoundedIcon/> },
-    { name: 'Messages', icon: <MarkunreadRoundedIcon/> },
+    { name: 'Dashboard', icon: <GridViewIcon sx={{ fill: "var(--primary-color)"}} /> },
+    { name: 'List', icon: <ListAltRoundedIcon sx={{ fill: "var(--primary-color)"}}/> },
+    { name: 'Calendar', icon: <CalendarMonthRoundedIcon sx={{ fill: "var(--primary-color)"}} /> },
+    { name: 'Messages', icon: <MarkunreadRoundedIcon sx={{ fill: "var(--primary-color)"}}/> },
 ]
 
 export const categoryItems = [
-    {name: "Inbox", icon: <InboxIcon />, color: 'red'},
-    {name: "Work", icon: <WorkIcon />, color: 'blue'},
-    {name: "Study", icon: <LocalLibraryIcon />, color: 'green'},
-    {name: "Favourite", icon: <FavoriteIcon />, color: 'yellow'},
+    {name: "Inbox", icon: <InboxIcon sx={{ fill: "var(--primary-color)"}} />, color: 'red'},
+    {name: "Work", icon: <WorkIcon sx={{ fill: "var(--primary-color)"}}/>, color: 'blue'},
+    {name: "Study", icon: <LocalLibraryIcon sx={{ fill: "var(--primary-color)"}}/>, color: 'green'},
+    {name: "Favourite", icon: <FavoriteIcon sx={{ fill: "var(--primary-color)"}}/>, color: 'yellow'},
 ]

@@ -136,7 +136,7 @@ export const Tasks = () => {
                             startAdornment: (
                                 <InputAdornment position="start">
                                     <IconButton>
-                                        <Add />
+                                        <Add sx={{fill: "var(--primary-color)"}}/>
                                     </IconButton>
                                 </InputAdornment>
                             ),

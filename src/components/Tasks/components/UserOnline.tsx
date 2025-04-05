@@ -21,17 +21,16 @@ const UserOnline = () => {
                 textAlign: "center",
             }}
         >
-            {/* Forest Background */}
 
             {/* Task Selection */}
             <Card sx={{ maxWidth: 345 }}>
-                <CardContent>
+                <CardContent sx={{ backgroundColor: "var(--primary-light-bgColor)", color: "var(--primary-color)" }}>
                     <Typography variant="h6">User player</Typography>
                     <List>
                         {users.length ? users.map((friend: any, index: number) => (
                             <ListItem key={index}>
                                 <Badge
-                                    color={friend.isOnline ? 'success' : 'error'}
+                                    color={friend.status ? 'success' : 'error'}
                                     variant="dot"
                                     overlap="circular"
                                 >
