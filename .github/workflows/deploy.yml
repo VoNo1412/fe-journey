@@ -31,5 +31,5 @@ jobs:
           TARGET: "/home/ubuntu/fe-journey"
           SCRIPT_AFTER: |
             sudo rm -rf /var/www/html/*
-            sudo mv /home/ubuntu/fe-journey/* /var/www/html/
+            sudo cp -r /home/ubuntu/fe-journey/* /var/www/html/
             sudo systemctl restart nginx
