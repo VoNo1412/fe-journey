@@ -200,10 +200,10 @@ export const Tasks = () => {
                             </MenuItem>)}
                         </Select>
                     </FormControl>
-                    {/* <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Now</Button>
+                    <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Now</Button>
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Tomorrow</Button>
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Next week</Button>
-                    <Button variant="outlined" startIcon={<Event />} sx={chipStyle}>Custom</Button> */}
+                    <Button variant="outlined" startIcon={<Event />} sx={chipStyle}>Custom</Button>
                 </Box>
             </Box>
             <Box
