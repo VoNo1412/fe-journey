@@ -22,6 +22,10 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
     const [open, setOpen] = React.useState<boolean>(false);
     const { auth } = useAuth();
     const dispatch = useDispatch<AppDispatch>();
+    const [showSubTasks, setShowSubTasks] = React.useState<boolean>(false);
+    const subTaskRef = React.useRef<HTMLDivElement>(null);
+
+
     const handleClose = (e: Event | React.SyntheticEvent) => {
         if (buttonRef?.current?.contains(e.target as HTMLElement)) {
             return;
@@ -83,8 +87,14 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                                 onClick={() => handleDeleteTask(task.taskId)}
                             />
                             <ArrowForwardIos
-                                sx={{ fontSize: "var(--seccond-size-icons)", color: "#aaa" }}
+                                sx={{
+                                    fontSize: "var(--seccond-size-icons)", color: "#aaa", cursor: "pointer",
+                                    transition: "transform 0.3s ease",
+                                    transform: showSubTasks ? "rotate(90deg)" : "rotate(0deg)",
+                                }}
                                 type="button"
+                                onClick={() => setShowSubTasks(prev => !prev)}
+
                             />
                         </Box>
                     </Box>
@@ -92,15 +102,32 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
 
                 <TaskPopupForm open={open} handleClose={handleClose} taskId={task.taskId} />
             </ListItem>
+
             {task?.subTasks?.length > 0 && task?.subTasks?.map((sub: ISubTask, index: number) => (
-                <Box key={index} sx={{
-                    background: "var(--third-light-bgColor)",
-                    width: "90%",
-                    color: "var(--primary-color)",
-                    padding: "20px",
-                    margin: "0 60px",
-                    borderRadius: "24px"
-                }}>
+                <Box key={index}
+                    component={"div"}
+                    ref={subTaskRef}
+                    style={{
+                        maxHeight: showSubTasks
+                            ? `100%`
+                            : "0px",
+                        overflow: "hidden",
+                        visibility: showSubTasks ? "visible" : "hidden",
+                        opacity: showSubTasks ? 1 : 0,
+                        transition: showSubTasks
+                        ? "max-height 0.5s ease, opacity 0.5s ease"
+                        : "opacity 0.6s ease 0.4s, max-height 10s ease", // 👈 delay opacity, kéo dài max-height
+                        position: showSubTasks ? "relative" : "absolute",
+                    }}
+                    sx={{
+                        background: "var(--third-light-bgColor)",
+                        width: "90%",
+                        color: "var(--primary-color)",
+                        padding: "20px",
+                        margin: "0 8%",
+                        borderRadius: "24px"
+
+                    }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography variant="h5">Title: {sub.title} </Typography>
                         <DeleteIcon
@@ -132,8 +159,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
 
 
                 </Box>
-            ))
-            }
+            ))}
         </>
     );
 };
