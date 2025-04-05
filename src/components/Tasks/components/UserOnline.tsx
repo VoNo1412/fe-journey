@@ -25,7 +25,7 @@ const UserOnline = () => {
             {/* Task Selection */}
             <Card sx={{ maxWidth: 345 }}>
                 <CardContent sx={{ backgroundColor: "var(--primary-light-bgColor)", color: "var(--primary-color)" }}>
-                    <Typography variant="h6">User</Typography>
+                    <Typography variant="h6">User Pro</Typography>
                     <List>
                         {users.length ? users.map((friend: any, index: number) => (
                             <ListItem key={index}>
