@@ -30,7 +30,7 @@ jobs:
           ssh-keyscan -H "3.0.139.123" >> ~/.ssh/known_hosts  # Hard-code host của EC2
 
           # Sao chép dist/ lên EC2
-          scp -r ./dist/* ubuntu@3.0.139.123:/home/ubuntu/fe-journey/
+          scp -r ./dist/* ubuntu@3.0.139.123:/home/ubuntu/fe-journey/dist
 
           # Khởi động lại ứng dụng trên EC2
           ssh ubuntu@3.0.139.123 << 'EOF'
@@ -38,7 +38,7 @@ jobs:
             sudo rm -rf /var/www/html/*
 
             # Sao chép các file từ /home/ubuntu/fe-journey vào thư mục web của Nginx
-            sudo cp -r /home/ubuntu/fe-journey/* /var/www/html/
+            sudo cp -r /home/ubuntu/fe-journey/dist/* /var/www/html/
 
             # Restart Nginx
             sudo systemctl restart nginx
