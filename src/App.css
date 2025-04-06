@@ -128,3 +128,12 @@ input:focus-visible {
 .active .css-rizt0-MuiTypography-root {
   font-weight: 800 !important;
 }
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  background-color: transparent !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+  -webkit-text-fill-color: white !important; /* <-- This is the key */
+  color: white !important;
+  caret-color: white !important;
+}

@@ -6,7 +6,6 @@ import { User } from "../common/interface";
 import { AUTH_API } from "../api/api";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-// import alertProgressFeature from "../common/alert";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
@@ -73,14 +72,15 @@ const LoginPage = () => {
       >
         <Box
           sx={{
-            width: 320,
+            width: 400,
             p: 3,
-            // bgcolor: "var(--primary-deep-bgColor)",
             background: "radial-gradient(#a43f3f, transparent);",
             borderRadius: 3,
             boxShadow: 3,
             textAlign: "center",
+            
           }}
+          
           component={"form"}
           onSubmit={handleSubmitForm}
 
@@ -97,36 +97,16 @@ const LoginPage = () => {
             required
             name="username"
             sx={{
-              mt: 3, mb: 2,
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "transparent", // Transparent background
-                borderRadius: 2,
-                color: "white", // Text color
-                "& fieldset": {
-                  borderColor: "white", // White border color
-                },
-                "&:hover fieldset": {
-                  borderColor: "#ccc", // Border color on hover
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ffffff", // Border color on focus
-                },
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // Ensures text inside input is white
-                "&:-webkit-autofill": {
-                  background: "transparent !important", // Transparent background for autofill
-                  color: "white !important", // White text for autofill
-                },
-                "&:-webkit-autofill:focus": {
-                  background: "transparent !important", // Transparent background for autofill on focus
-                },
-              },
-
+              mt: 3, mb: 2
             }}
             onChange={handleOnChange}
             slotProps={{
+              
               input: {
+                style: {
+                  backgroundColor: 'transparent',
+                  color: 'white',
+                },
                 startAdornment: (
                   <InputAdornment position="start">
                     <PersonIcon sx={{color: "var(--primary-color)"}}/>
@@ -146,30 +126,6 @@ const LoginPage = () => {
             name="password"
             sx={{
               mt: 1, mb: 2,
-              "& .MuiOutlinedInput-root": {
-                backgroundColor: "transparent", // Transparent background
-                borderRadius: 2,
-                color: "white", // Text color
-                "& fieldset": {
-                  borderColor: "white", // White border color
-                },
-                "&:hover fieldset": {
-                  borderColor: "#ccc", // Border color on hover
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ffffff", // Border color on focus
-                },
-              },
-              "& .MuiInputBase-input": {
-                color: "white", // Ensures text inside input is white
-                "&:-webkit-autofill": {
-                  background: "transparent !important", // Transparent background for autofill
-                  color: "white !important", // White text for autofill
-                },
-                "&:-webkit-autofill:focus": {
-                  background: "transparent !important", // Transparent background for autofill on focus
-                },
-              }
             }}
             onChange={handleOnChange}
             slotProps={{
