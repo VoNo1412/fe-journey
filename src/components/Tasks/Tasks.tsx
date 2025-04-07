@@ -42,6 +42,7 @@ export const Tasks = () => {
         assignUserId: null
     });
 
+    console.log('first')
     React.useEffect(() => {
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
         fetchGetCategories()
