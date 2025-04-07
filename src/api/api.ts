@@ -88,9 +88,9 @@ const AUTH_API = {
         }
     },
 
-    apiGetUsers: async () => {
+    apiGetUsers: async (userId: number) => {
         try {
-            const response = await axios.get(`/user/list`);
+            const response = await axios.get(`/user/list/${userId}`);
             return response.data;
         } catch (error) {
             throw error

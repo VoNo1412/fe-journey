@@ -17,6 +17,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showNotification } from "../../store/notificationSlice";
 
+
 export const Tasks = () => {
     const [category, setCategory] = React.useState<Category[]>([]);
     const inputRef = React.useRef<HTMLInputElement | null>(null); // Define the
@@ -60,8 +61,6 @@ export const Tasks = () => {
         e.preventDefault();
         try {
             if (!formData.title.trim()) return;
-            console.log("tasks: ", tasks[0])
-            console.log("form_data: ", formData);
             dispatch(createTask({ ...formData })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -102,6 +101,7 @@ export const Tasks = () => {
         }
     };
 
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={1000} />
@@ -136,7 +136,7 @@ export const Tasks = () => {
                             startAdornment: (
                                 <InputAdornment position="start">
                                     <IconButton>
-                                        <Add sx={{fill: "var(--primary-color)"}}/>
+                                        <Add sx={{ fill: "var(--primary-color)" }} />
                                     </IconButton>
                                 </InputAdornment>
                             ),
@@ -212,18 +212,24 @@ export const Tasks = () => {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                 }}
             >
-                {(loading && !tasks?.length) ? <Box sx={{ textAlign: "center" }}><CircularProgress /></Box> :
-                    <List sx={{ minHeight: "70px" }}>
-                        {tasks?.map((task, index) => (
-                            <TaskMenuDropdown
-                                key={index}
-                                task={task}
-                                index={index}
-                                handleDeleteTask={handleDeleteTask}
-                            />
-                        ))}
-                    </List>
-                }
+                {(loading && (!tasks || tasks.length === 0)) ? (
+                    <Box sx={{ textAlign: "center" }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    tasks && tasks.length > 0 && (
+                        <List sx={{ minHeight: "70px" }}>
+                            {tasks.map((task, index) => (
+                                <TaskMenuDropdown
+                                    key={index}
+                                    task={task}
+                                    index={index}
+                                    handleDeleteTask={handleDeleteTask}
+                                />
+                            ))}
+                        </List>
+                    )
+                )}
 
             </Box>
         </>
