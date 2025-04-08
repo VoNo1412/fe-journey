@@ -25,7 +25,6 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
     const [showSubTasks, setShowSubTasks] = React.useState<boolean>(false);
     const subTaskRef = React.useRef<HTMLDivElement>(null);
 
-
     const handleClose = (e: Event | React.SyntheticEvent) => {
         if (buttonRef?.current?.contains(e.target as HTMLElement)) {
             return;
@@ -164,4 +163,4 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
     );
 };
 
-export default TaskMenuDropdown;
+export default React.memo(TaskMenuDropdown);

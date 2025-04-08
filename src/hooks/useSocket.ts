@@ -1,31 +1,30 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { HOST_WEBSOCKET } from '../api/constants';
 
-// Create a custom hook
-const useSocket = (url: string, userId: number) => {
-    const [socket, setSocket] = useState<any>(null); // state to store the socket instance
-    const [userStatus, setUserStatus] = useState<any>(null); // state to store user status updates
+const useSocket = (userId: number, on_message: string) => {
+    const [socket, setSocket] = useState<any>(null);
+    const [state, setState] = useState<any>(null);
 
     useEffect(() => {
-        // Establish socket connection
-        const socketInstance = io(url, { query: { userId } }); // Pass userId as a query parameter
-
-        // Set the socket instance in state
-        setSocket(socketInstance);
-
-        // Listen for user-status-update events
-        socketInstance.on('user-status-update', (data: any) => {
-            console.log('User status update:', data);
-            setUserStatus(data); // Update the state with the new user status
+        // Connect to the specific namespace
+        const socketInstance = io(HOST_WEBSOCKET, {
+            query: { userId },
         });
 
-        // Cleanup function to disconnect the socket when the component unmounts
+        setSocket(socketInstance);
+
+        socketInstance.on(on_message, (data: any) => {
+            console.log(`[Socket] Received:`, data);
+            setState(data);
+        });
+
         return () => {
             socketInstance.disconnect();
         };
-    }, [url]); // Re-run the effect only if the URL changes
+    }, [userId, on_message]); // dependency array includes dynamic params
 
-    return { socket, userStatus };
+    return { socket, state };
 };
 
 export default useSocket;

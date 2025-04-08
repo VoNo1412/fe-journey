@@ -16,6 +16,7 @@ import { createTask, deleteTask, fetchTasks, removeTaskOptimistic } from "../../
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showNotification } from "../../store/notificationSlice";
+import useSocket from "../../hooks/useSocket";
 
 
 export const Tasks = () => {
@@ -27,6 +28,7 @@ export const Tasks = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
     const { message, type } = useSelector((state: RootState) => state.notification);
+    const notificationData  = useSocket(auth?.user.id, 'notification'); // Replace with your socket URL
 
     React.useEffect(() => {
         if (message) {
@@ -34,26 +36,29 @@ export const Tasks = () => {
         }
     }, [message, type]);
 
-
     const [formData, setFormData] = React.useState({
         title: "",
         categoryId: null as null | number,
         isCompleted: false,
-        assignUserId: null
+        assignUserId: null,
+        userId: auth?.user.id
     });
 
-    console.log('first')
+    console.log(notificationData, "this one")
+
     React.useEffect(() => {
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
         fetchGetCategories()
             .then((res) => {
                 setCategory(res);
-                setFormData({ ...formData, categoryId: res[0].id })
+                setFormData(prev => ({ ...prev, categoryId: res[0].id }));
             })
             .catch((err) => {
                 console.log(err);
             });
+    }, [])
 
+    React.useEffect(() => {
         if (!auth?.user?.id) return;
         dispatch(fetchTasks(auth.user.id));
     }, []);
@@ -61,10 +66,11 @@ export const Tasks = () => {
     const handleSubmitTask = async (e: any) => {
         e.preventDefault();
         try {
-            if (!formData.title.trim()) return;
-            dispatch(createTask({ ...formData })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            const title = inputRef.current?.value?.trim();
+            if (!title) return;
+            dispatch(createTask({ ...formData, title })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            if (inputRef.current) { inputRef.current.value = ""}
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
-            setFormData({ ...formData, [e.target.name]: e.target.value })
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
         } catch (error) {
             console.error("Error creating task:", error);
@@ -77,19 +83,6 @@ export const Tasks = () => {
             ...prevData,
             [e.target.name]: e.target.value
         }));
-    };
-
-    const handleSelectUser = (e: any, value: any) => {
-        console.log("value", e.target, value)
-        if (value?.id) {
-            setFormData({
-                ...formData,
-                userId: value.id,
-                assignUserId: auth?.user.id
-            } as any)
-        } else {
-            setFormData(prev => ({ ...prev, userId: auth?.user.id }))
-        }
     };
 
     const handleDeleteTask = async (taskId: number) => {
@@ -130,9 +123,12 @@ export const Tasks = () => {
                         variant="outlined"
                         name="title"
                         placeholder="Add task for today"
-                        onChange={handleInputChange}
-                        value={formData.title}
                         inputRef={inputRef}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSubmitTask(e); // gọi hàm tạo task
+                            }
+                        }}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -169,7 +165,17 @@ export const Tasks = () => {
                         freeSolo
                         options={data.filter((x: any) => x.id !== auth.user.id)}
                         getOptionLabel={(option: any) => option?.username || ""}
-                        onChange={handleSelectUser}
+                        onChange={(_: any, value) =>
+                            setFormData(prev => {
+                                console.log(' run inside here', value?.id)
+                                const isAssigning = Boolean(value?.id);
+                                return {
+                                    ...prev,
+                                    userId: isAssigning ? value.id : auth?.user.id,
+                                    assignUserId: isAssigning ? auth?.user.id : null,
+                                };
+                            })
+                        }
                         renderInput={(params) =>
                             <TextField
                                 {...params}
@@ -220,7 +226,7 @@ export const Tasks = () => {
                 ) : (
                     tasks && tasks.length > 0 && (
                         <List sx={{ minHeight: "70px" }}>
-                            {tasks.map((task, index) => (
+                            {tasks.map((task: any, index) => (
                                 <TaskMenuDropdown
                                     key={index}
                                     task={task}

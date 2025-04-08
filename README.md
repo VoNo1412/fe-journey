@@ -1,54 +1,60 @@
-# React + TypeScript + Vite
+# Link website: http://3.0.139.123/
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Habit Tracker – Fullstack Project
 
-Currently, two official plugins are available:
+A fullstack Habit Tracker web application that allows users to track and manage their habits. The application also includes task creation and assignment functionality for teams.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
+- **Frontend:** ReactJS, Redux
+- **Backend:** NestJS, TypeORM
+- **Database:** MySQL (via TypeORM)
+- **Containerization:** Docker
+- **Cloud Hosting:** AWS EC2
+- **Process Management:** PM2
+- **API Documentation:** Swagger
+- **Reverse Proxy:** NGINX
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **Task Management:** 
+  - Users can create tasks, set deadlines, assign priorities, and assign tasks to other users.
+  - Admin or project managers can assign tasks to specific users.
+  - Users can track their assigned tasks, mark them as in progress, and complete 
+  - Follow all list to do and progress 
+  
+- **API Integration:**
+  - RESTful API endpoints are created with NestJS, ensuring efficient task and habit management.
+  - TypeORM is used to interact with the database in a type-safe manner, allowing seamless data management.
+  
+- **Authentication & Authorization:**
+  - Users can securely log in using JWT-based authentication.
+  - Role-based access control (RBAC) ensures only authorized users (e.g., admins or project managers) can assign tasks.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Process Management:**
+  - PM2 ensures the NestJS server remains up with high availability, automatic restarts, and smooth deployment on AWS EC2.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **API Documentation:**
+  - Integrated Swagger for automatic API documentation, providing a clear interface for developers with detailed API endpoints, request/response schemas, and authentication methods.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **Reverse Proxy:**
+  - Configured NGINX as a reverse proxy to efficiently route traffic, enhance security, and improve performance for both the backend and frontend.
+
+## Getting Started
+
+### Prerequisites
+
+Before running the project locally, ensure you have the following installed:
+
+- Node.js (v14.x or higher)
+- Docker (for containerization)
+- MySQL (for database)
+- AWS account (for EC2 and deployment)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/habit-tracker.git
+cd habit-tracker
