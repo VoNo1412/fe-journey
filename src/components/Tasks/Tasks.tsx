@@ -16,6 +16,7 @@ import { createTask, deleteTask, fetchTasks, removeTaskOptimistic } from "../../
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showNotification } from "../../store/notificationSlice";
+import useSocket from "../../hooks/useSocket";
 // import useSocket from "../../hooks/useSocket";
 
 
@@ -29,7 +30,7 @@ export const Tasks = () => {
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
     const { message, type } = useSelector((state: RootState) => state.notification);
     const [assignedUser, setAssignedUser] = React.useState<any>([]);
-    // const notificationData  = useSocket(auth?.user.id, 'notification'); // Replace with your socket URL
+    const userStatus  = useSocket(auth?.user.id, 'user-status-update'); // Replace with your socket URL
 
     React.useEffect(() => {
         if (message) {
@@ -45,8 +46,7 @@ export const Tasks = () => {
         userId: auth?.user.id
     });
 
-    // console.log(assigneUser, 'check user');
-    // console.log(notificationData, "this one")
+    console.log(userStatus, "Status user")
 
     React.useEffect(() => {
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
