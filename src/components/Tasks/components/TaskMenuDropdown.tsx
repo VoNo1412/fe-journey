@@ -52,16 +52,25 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
             .catch(err => console.error(err));
     }
 
-    const debouncedApiCall = React.useMemo(() => debounce(() => {
-        dispatch(updateTask({ id: task.taskUserId, isCompleted: checked }))
-    }, 500), []);
+    const handleCheckboxToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newChecked = event.target.checked;
+        setChecked(newChecked);
+        debouncedApiCall(newChecked);
+    };
 
+
+    const debouncedApiCall = React.useMemo(() =>
+        debounce((newChecked: boolean) => {
+            dispatch(updateTask({ id: task.taskUserId, isCompleted: newChecked }));
+        }, 500),
+        []);
 
     return (
         <>
             <ListItem disablePadding key={index}>
                 <ListItemButton sx={{ display: "flex", alignItems: "center" }}>
-                    <Checkbox sx={{ marginRight: 1 }} checked={checked} onClick={debouncedApiCall} onChange={() => setChecked(!checked)} />
+                    <Checkbox sx={{ marginRight: 1 }} checked={checked}
+                        onChange={handleCheckboxToggle} />
                     <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <Box>
                             <Typography variant="body1" sx={{
@@ -84,15 +93,15 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                         <Box sx={{ display: "flex", gap: "0 10px", alignItems: "center" }}>
                             {!Object.values(task.assigned).length && <>
                                 <AddCircleOutlineIcon
-                                sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
-                                type="button"
-                                onClick={() => setOpen(prev => !prev)}
-                            />
-                            <DeleteIcon
-                                sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
-                                type="button"
-                                onClick={() => handleDeleteTask(task.taskId)}
-                            />
+                                    sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
+                                    type="button"
+                                    onClick={() => setOpen(prev => !prev)}
+                                />
+                                <DeleteIcon
+                                    sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
+                                    type="button"
+                                    onClick={() => handleDeleteTask(task.taskId)}
+                                />
                             </>}
                             <ArrowForwardIos
                                 sx={{
@@ -144,7 +153,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                             onClick={() => handleDelSubTask(sub?.id)}
                         />}
                     </Box>
-                    <Typography variant="inherit"  sx={{whiteSpace: 'pre-wrap'}}>Description: {sub.description}</Typography>
+                    <Typography variant="inherit" sx={{ whiteSpace: 'pre-wrap' }}>Description: {sub.description}</Typography>
                     <TextareaAutosize
                         placeholder="summarize"
                         className="textArea"
