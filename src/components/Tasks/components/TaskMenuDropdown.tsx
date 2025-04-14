@@ -9,7 +9,8 @@ import { SUB_TASK_API } from "../../../api/api";
 import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
-import { fetchTasks } from "../../../store/taskSlice";
+import { fetchTasks, updateTask } from "../../../store/taskSlice";
+import { debounce } from "lodash";
 
 interface TaskMenuDropdownProps {
     task: Task;
@@ -24,6 +25,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
     const dispatch = useDispatch<AppDispatch>();
     const [showSubTasks, setShowSubTasks] = React.useState<boolean>(false);
     const subTaskRef = React.useRef<HTMLDivElement>(null);
+    const [checked, setChecked] = React.useState(task.isCompleted);
 
     const handleClose = (e: Event | React.SyntheticEvent) => {
         if (buttonRef?.current?.contains(e.target as HTMLElement)) {
@@ -46,20 +48,25 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
         await SUB_TASK_API.apiUpdateSummarize(id, summarize)
             .then(res => {
                 if (res.statusCode != 200) return;
-                alert('success');
             })
             .catch(err => console.error(err));
     }
+
+    const debouncedApiCall = React.useMemo(() => debounce(() => {
+        dispatch(updateTask({ id: task.taskUserId, isCompleted: checked }))
+    }, 500), []);
 
 
     return (
         <>
             <ListItem disablePadding key={index}>
                 <ListItemButton sx={{ display: "flex", alignItems: "center" }}>
-                    <Checkbox sx={{ marginRight: 1 }} checked={task.isCompleted} />
+                    <Checkbox sx={{ marginRight: 1 }} checked={checked} onClick={debouncedApiCall} onChange={() => setChecked(!checked)} />
                     <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <Box>
-                            <Typography variant="body1">{task.title} - {task.time} + {task?.assigned?.username}</Typography>
+                            <Typography variant="body1" sx={{
+                                textDecorationLine: checked ? "line-through" : "blink"
+                            }}>{task.title} - {task.time} + {task?.assigned?.username}</Typography>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                                 <Box
                                     sx={{
@@ -75,7 +82,8 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", gap: "0 10px", alignItems: "center" }}>
-                            <AddCircleOutlineIcon
+                            {!Object.values(task.assigned).length && <>
+                                <AddCircleOutlineIcon
                                 sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
                                 type="button"
                                 onClick={() => setOpen(prev => !prev)}
@@ -85,6 +93,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                                 type="button"
                                 onClick={() => handleDeleteTask(task.taskId)}
                             />
+                            </>}
                             <ArrowForwardIos
                                 sx={{
                                     fontSize: "var(--seccond-size-icons)", color: "#aaa", cursor: "pointer",
@@ -114,8 +123,8 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                         visibility: showSubTasks ? "visible" : "hidden",
                         opacity: showSubTasks ? 1 : 0,
                         transition: showSubTasks
-                        ? "max-height 0.5s ease, opacity 0.5s ease"
-                        : "opacity 0.6s ease 0.4s, max-height 10s ease", // 👈 delay opacity, kéo dài max-height
+                            ? "max-height 0.5s ease, opacity 0.5s ease"
+                            : "opacity 0.6s ease 0.4s, max-height 10s ease", // 👈 delay opacity, kéo dài max-height
                         position: showSubTasks ? "relative" : "absolute",
                     }}
                     sx={{
@@ -129,11 +138,11 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                     }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography variant="h5">Title: {sub.title} </Typography>
-                        <DeleteIcon
+                        {!Object.values(task.assigned).length && <DeleteIcon
                             sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
                             type="button"
                             onClick={() => handleDelSubTask(sub?.id)}
-                        />
+                        />}
                     </Box>
                     <Typography variant="inherit">Description: {sub.description}</Typography>
                     <TextareaAutosize
@@ -150,8 +159,9 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                         }}
                         defaultValue={sub.summarize}
                         onKeyDown={(e: any) => {
-                            if (e.key == "Enter") {
+                            if (e.key == "Enter" || e.key == "Tab") {
                                 enterSummarize(sub.id, e.target.value);
+                                return;
                             }
                         }}
                     />
