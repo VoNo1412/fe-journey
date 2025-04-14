@@ -16,6 +16,7 @@ jobs:
 
       - name: Build the project
         run: |
+          echo "VITE_HOST_BACKEND=${{ secrets.VITE_HOST_BACKEND }}" > .env
           npm ci
           npm run build
 
