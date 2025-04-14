@@ -8,7 +8,7 @@ import useAuth from "../../../hooks/useAuth";
 const UserOnline = () => {
     const [users, setUsers] = React.useState<any>([]);
     const { auth } = useAuth();
-    const data = useSocket(auth?.user.id, 'user-status-update'); // Replace with your socket URL
+    const data = useSocket(auth.user.id, 'user-status-update');
 
     React.useEffect(() => {
         if (!auth?.user.id) return;
@@ -16,22 +16,62 @@ const UserOnline = () => {
         fetchUsers().then(x => setUsers(x)).catch(err => console.error('Nobody exist!!!', err));
     }, [auth?.user.id]);
 
-    React.useEffect(() => {
-        if (!data.state) return;
-        const formatLastSeen = (lastSeen: string) => {
-            const date = new Date(lastSeen);
-            return `${date.getHours()}:${date.getMinutes()} - ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-        };
-        setUsers((prevUsers: any) => {
-            const updatedUsers = prevUsers.map((user: any) =>
-                user.userId === +data.state.userId
-                    ? { ...user, status: data.state.isOnline }
-                    : { ...user, lastSeen: formatLastSeen(user.lastSeen) }
-            );
+    const formatLastSeen = React.useCallback((lastSeen: Date) => {
+        const date = new Date(lastSeen);
+        const now = new Date();
 
-            return updatedUsers;
-        });
-    }, [data.state]); // Only rerun if userStatus changes
+        const isSameDay = (d1: Date, d2: Date) =>
+            d1.getDate() === d2.getDate() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getFullYear() === d2.getFullYear();
+
+        const isYesterday = (d1: Date, d2: Date) => {
+            const yesterday = new Date(d2);
+            yesterday.setDate(d2.getDate() - 1);
+            return isSameDay(d1, yesterday);
+        };
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        if (isSameDay(date, now)) {
+            return `Today at ${hours}:${minutes}`;
+        } else if (isYesterday(date, now)) {
+            return `Yesterday at ${hours}:${minutes}`;
+        } else {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            return `${day}/${month} at ${hours}:${minutes}`;
+        }
+    }, []);
+
+
+    React.useEffect(() => {
+        if (data && !data.state) return;
+        if (data.state.isOnline) {
+            setUsers((prevUsers: any) => {
+                const updatedUsers = prevUsers.map((user: any) =>
+                    user.userId === +data?.state?.userId
+                        ? { ...user, status: data?.state.isOnline }
+                        : user
+                );
+
+                return updatedUsers;
+            });
+        }
+
+        if (!data.state.isOnline) {
+            setUsers((prevUsers: any) => {
+                const updatedUsers = prevUsers.map((user: any) =>
+                    user.userId === +data?.state?.userId
+                        ? { ...user, status: data?.state.isOnline, lastSeen: formatLastSeen(new Date()) } : user
+                );
+
+                return updatedUsers;
+            });
+        }
+    }, [data?.state]); // Only rerun if userStatus changes
+
 
 
     return (
@@ -78,4 +118,4 @@ const UserOnline = () => {
     );
 };
 
-export default UserOnline;
+export default React.memo(UserOnline);

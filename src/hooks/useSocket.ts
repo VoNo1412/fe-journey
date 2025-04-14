@@ -1,34 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import { HOST_WEBSOCKET } from '../api/constants';
 
-const useSocket = (userId: number, on_message: string) => {
-    const [socket, setSocket] = useState<any>(null);
+const useSocket = (userId: number, onMessage: string) => {
+    const socketRef = useRef<any>(null);
     const [state, setState] = useState<any>(null);
 
     useEffect(() => {
-        // Connect to the specific namespace
-        const socketInstance = io(HOST_WEBSOCKET, {
+        if (!userId || socketRef.current) return;
+
+        const socket = io(HOST_WEBSOCKET, {
             query: { userId },
-            reconnection: true,              // enable reconnection (default is true)
-            reconnectionAttempts: 2,         // try to reconnect up to 5 times
-            reconnectionDelay: 1000,         // start with 1 second delay between attempts
-            reconnectionDelayMax: 5000,  
+            reconnection: true,
+            reconnectionAttempts: 3,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
         });
 
-        setSocket(socketInstance);
+        socketRef.current = socket;
 
-        socketInstance.on(on_message, (data: any) => {
+        console.log('Socket connected');
+
+        socket.on(onMessage, (data: any) => {
             console.log(`[Socket] Received:`, data);
             setState(data);
         });
 
         return () => {
-            socketInstance.disconnect();
+            console.log('Socket disconnected');
+            socket.disconnect();
+            socketRef.current = null;
         };
-    }, [userId, on_message]); // dependency array includes dynamic params
+    }, [userId, onMessage]);
 
-    return { socket, state };
+    return { socket: socketRef.current, state };
 };
 
 export default useSocket;
