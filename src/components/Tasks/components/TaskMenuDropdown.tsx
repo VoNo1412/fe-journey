@@ -144,7 +144,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                             onClick={() => handleDelSubTask(sub?.id)}
                         />}
                     </Box>
-                    <Typography variant="inherit">Description: {sub.description}</Typography>
+                    <Typography variant="inherit"  sx={{whiteSpace: 'pre-wrap'}}>Description: {sub.description}</Typography>
                     <TextareaAutosize
                         placeholder="summarize"
                         className="textArea"
