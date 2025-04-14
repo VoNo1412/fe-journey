@@ -19,7 +19,7 @@ const useSocket = (userId: number, onMessage: string) => {
 
         socketRef.current = socket;
 
-        console.log('Socket connected');
+        console.log('Socket connected', socket);
 
         socket.on(onMessage, (data: any) => {
             console.log(`[Socket] Received:`, data);
