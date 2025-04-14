@@ -16,7 +16,7 @@ import { createTask, deleteTask, fetchTasks, removeTaskOptimistic } from "../../
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showNotification } from "../../store/notificationSlice";
-import useSocket from "../../hooks/useSocket";
+// import useSocket from "../../hooks/useSocket";
 
 
 export const Tasks = () => {
@@ -28,7 +28,8 @@ export const Tasks = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
     const { message, type } = useSelector((state: RootState) => state.notification);
-    const notificationData  = useSocket(auth?.user.id, 'notification'); // Replace with your socket URL
+    const [assignedUser, setAssignedUser] = React.useState<any>([]);
+    // const notificationData  = useSocket(auth?.user.id, 'notification'); // Replace with your socket URL
 
     React.useEffect(() => {
         if (message) {
@@ -44,7 +45,8 @@ export const Tasks = () => {
         userId: auth?.user.id
     });
 
-    console.log(notificationData, "this one")
+    // console.log(assigneUser, 'check user');
+    // console.log(notificationData, "this one")
 
     React.useEffect(() => {
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
@@ -68,10 +70,11 @@ export const Tasks = () => {
         try {
             const title = inputRef.current?.value?.trim();
             if (!title) return;
-            dispatch(createTask({ ...formData, title })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            dispatch(createTask({ ...formData, title, assignedUser })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
             if (inputRef.current) { inputRef.current.value = ""}
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
+            setAssignedUser([])
         } catch (error) {
             console.error("Error creating task:", error);
             alert("Failed to create task." + error);
@@ -137,6 +140,22 @@ export const Tasks = () => {
                                     </IconButton>
                                 </InputAdornment>
                             ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                  <Box
+                                    sx={{
+                                      width: 30,
+                                      height: 30,
+                                      backgroundColor: "var(--primary-color)",
+                                      borderRadius: "50%",
+                                      marginRight: "5px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: 'center'
+                                    }}
+                                  >{assignedUser.length}</Box>
+                                </InputAdornment>
+                              ),
                         }}
                         sx={{
                             background: "var(--primary-light-bgColor)",
@@ -153,11 +172,9 @@ export const Tasks = () => {
                 {/* Quick Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     <Autocomplete
-                        // sx={{ flex: 1 }}
                         sx={{
                             flex: 1,
                             background: "var(--third-light-bgColor)",
-                            // color: "var(--primary-color)",
                             borderRadius: "25px",
                             "& fieldset": { border: "none" },
                         }}
@@ -166,8 +183,9 @@ export const Tasks = () => {
                         options={data.filter((x: any) => x.id !== auth.user.id)}
                         getOptionLabel={(option: any) => option?.username || ""}
                         onChange={(_: any, value) =>
+                        {
                             setFormData(prev => {
-                                console.log(' run inside here', value?.id)
+                                console.log('assigned to user', value?.id)
                                 const isAssigning = Boolean(value?.id);
                                 return {
                                     ...prev,
@@ -175,6 +193,9 @@ export const Tasks = () => {
                                     assignUserId: isAssigning ? auth?.user.id : null,
                                 };
                             })
+
+                            Boolean(value?.id) && !assignedUser.includes(value.id) ? setAssignedUser((prev: any) => [...prev, value.id]) : "";
+                        }
                         }
                         renderInput={(params) =>
                             <TextField
