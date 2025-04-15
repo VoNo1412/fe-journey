@@ -12,7 +12,7 @@ import TaskMenuDropdown from "./components/TaskMenuDropdown";
 import useFetchQuery from "../../hooks/useFetchSearch";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { createTask, deleteTask, fetchTasks, removeTaskOptimistic } from "../../store/taskSlice";
+import { createTask, createTaskToUser, deleteTask, fetchTasks, removeTaskOptimistic } from "../../store/taskSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showNotification } from "../../store/notificationSlice";
@@ -23,7 +23,7 @@ export const Tasks = () => {
     const inputRef = React.useRef<HTMLInputElement | null>(null); // Define the
     const { auth } = useAuth();
     const [query, setQuery] = useState("");
-    const { data } = useFetchQuery(`/${endpoint.user}/by_name`, `username=${query}`);
+    const { data } = useFetchQuery(`/${endpoint.user}/by_name`, query);
     const dispatch = useDispatch<AppDispatch>();
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
     const { message, type } = useSelector((state: RootState) => state.notification);
@@ -67,7 +67,11 @@ export const Tasks = () => {
         try {
             const title = inputRef.current?.value?.trim();
             if (!title) return;
-            dispatch(createTask({ ...formData, title, assignedUser })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            if (assignedUser.length) {
+                dispatch(createTaskToUser({ ...formData, title, assignedUser, assignById: auth?.user.id })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            } else {
+                dispatch(createTask({ ...formData, title })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+            }
             if (inputRef.current) { inputRef.current.value = ""}
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
             setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
@@ -85,11 +89,11 @@ export const Tasks = () => {
         }));
     };
 
-    const handleDeleteTask = async (taskId: number) => {
+    const handleDeleteTask = async (taskUserId: number) => {
         try {
-            dispatch(removeTaskOptimistic(taskId)); // Remove from UI immediately
+            dispatch(removeTaskOptimistic(taskUserId)); // Remove from UI immediately
             dispatch(showNotification({ message: "Delete task successfully!", type: "success" }));
-            await dispatch(deleteTask(taskId)).unwrap(); // Ensure task is deleted before fetching    
+            await dispatch(deleteTask(taskUserId)).unwrap(); // Ensure task is deleted before fetching    
         } catch (error) {
             dispatch(showNotification({ message: "Failed to delete task.", type: "error" }));
         }
@@ -191,7 +195,7 @@ export const Tasks = () => {
                                 };
                             })
 
-                            Boolean(value?.id) && !assignedUser.includes(value.id) ? setAssignedUser((prev: any) => [...prev, value.id]) : "";
+                            Boolean(value?.id) && !assignedUser.includes(value.id) ? setAssignedUser((prev: any) => [...prev, value.id]) : setAssignedUser([]);
                         }
                         }
                         renderInput={(params) =>

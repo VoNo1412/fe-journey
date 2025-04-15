@@ -5,11 +5,14 @@ import { Badge, Box, InputBase } from '@mui/material';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import Notification from './component/Notification';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
     const notificationRef = React.useRef<HTMLDivElement>(null);
     const buttonRef = React.useRef<HTMLButtonElement>(null);
+    const { notifications } = useSelector((state: RootState) => state.tasks);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -30,7 +33,7 @@ const Header = () => {
             window.removeEventListener('click', handleClickOutside);
         };
     }, []);
-
+    
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px', marginBottom: '20px' }}>
             <Box
@@ -95,7 +98,7 @@ const Header = () => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <Badge badgeContent={2} color="primary">
+                            <Badge badgeContent={notifications?.length || 0} color="primary">
                                 <CircleNotificationsIcon sx={{ fontSize: 'var(--primary-size-icons)' }} />
                             </Badge>
                             

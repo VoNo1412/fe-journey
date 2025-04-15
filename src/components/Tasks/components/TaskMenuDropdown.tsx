@@ -15,7 +15,7 @@ import { debounce } from "lodash";
 interface TaskMenuDropdownProps {
     task: Task;
     index: number;
-    handleDeleteTask: (taskId: number) => void;
+    handleDeleteTask: (taskUserId: number) => void;
 }
 
 const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handleDeleteTask }) => {
@@ -91,7 +91,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", gap: "0 10px", alignItems: "center" }}>
-                            {!Object.values(task.assigned).length && <>
+                            { <>
                                 <AddCircleOutlineIcon
                                     sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
                                     type="button"
@@ -100,7 +100,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                                 <DeleteIcon
                                     sx={{ fontSize: "var(--seccond-size-icons)", color: "var(--primary-color)" }}
                                     type="button"
-                                    onClick={() => handleDeleteTask(task.taskId)}
+                                    onClick={() => handleDeleteTask(task.taskUserId)}
                                 />
                             </>}
                             <ArrowForwardIos

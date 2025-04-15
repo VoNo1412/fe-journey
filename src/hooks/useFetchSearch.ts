@@ -17,7 +17,7 @@ const useFetchQuery = (url: string, query: string, delay = 500) => {
             setError(null);
 
             try {
-                const response = await axios.get(`${url}?${query}`);
+                const response = await axios.get(`${url}?username=${query}`);
                 setData(response.data);
             } catch (err) {
                 setError("Error fetching data");

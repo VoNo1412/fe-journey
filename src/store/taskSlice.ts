@@ -6,11 +6,13 @@ interface TaskState {
     tasks: Task[];
     loading: boolean;
     error: string | null;
-    total: number
+    total: number,
+    notifications: any
 }
 
 const initialState: TaskState = {
     tasks: [],
+    notifications: [],
     loading: false,
     error: null,
     total: 0
@@ -27,7 +29,7 @@ const endpoint = {
 export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async (userId: number, { rejectWithValue }) => {
     try {
         const response = await axios.get(`/${endpoint.task}/${userId}`);
-        return response?.data?.data;
+        return response?.data;
     } catch (error: any) {
         return rejectWithValue(error.meesage)   
     }
@@ -38,7 +40,21 @@ export const createTask = createAsyncThunk(
     "tasks/createTask",
     async (taskData: any, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`/${endpoint.task}`, taskData);
+            const response = await axios.post(`/${endpoint.task}/me`, taskData);
+            if (response?.status !== 201) throw new Error("Failed to create task");
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+// Async Thunk để tạo task
+export const createTaskToUser = createAsyncThunk(
+    "tasks/createTaskToUser",
+    async (taskData: any, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`/${endpoint.task}/assigned`, taskData);
             if (response?.status !== 201) throw new Error("Failed to create task");
             return response.data;
         } catch (error: any) {
@@ -92,7 +108,8 @@ const taskSlice = createSlice({
             })
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.loading = false;
-                state.tasks = action.payload,
+                state.tasks = action.payload.data,
+                state.notifications = action.payload.notifications,
                 state.total = action.payload.length
             })
             .addCase(fetchTasks.rejected, (state, action) => {

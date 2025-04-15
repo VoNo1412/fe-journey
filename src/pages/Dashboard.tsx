@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Typography variant="h4" fontWeight="bold">
-                Good {getVietnamTimePeriod()} Do it by yourself
+                Good {getVietnamTimePeriod()}
               </Typography>
               <Typography variant="h6">You have {total} tasks today</Typography>
               <MeetingSchedule />
