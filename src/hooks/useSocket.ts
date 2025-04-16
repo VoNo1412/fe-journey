@@ -10,7 +10,7 @@ const useSocket = (userId: number, onMessage: string) => {
         if (!userId || socketRef.current) return;
 
         const socket = io(HOST_WEBSOCKET, {
-            path: 'user',
+            path: '/user',
             query: { userId },
             reconnection: true,
             reconnectionAttempts: 3,
