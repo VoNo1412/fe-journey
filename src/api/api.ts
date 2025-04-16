@@ -95,7 +95,6 @@ const AUTH_API = {
     apiGetMe: async () => {
         try {
             const response = await axiosInstance.get(`/auth/me`);
-            console.log(response, "getme");
             return response.data;
         } catch (error) {
             throw error;
