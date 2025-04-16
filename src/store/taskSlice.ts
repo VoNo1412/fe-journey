@@ -80,9 +80,9 @@ export const updateTask = createAsyncThunk(
 // Async Thunk để xóa task
 export const deleteTask = createAsyncThunk(
     "tasks/deleteTask",
-    async (taskId: number, { rejectWithValue }) => {
+    async (taskUserId: number, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`/${endpoint.task}/${taskId}`);
+            const response = await axios.delete(`/${endpoint.task}/task_user/${taskUserId}`);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.message);
@@ -96,7 +96,7 @@ const taskSlice = createSlice({
     initialState,
     reducers: {
         removeTaskOptimistic: (state, action) => {
-            state.tasks = state.tasks.filter(task => task.taskId !== action.payload);
+            state.tasks = state.tasks.filter(task => task.taskUserId !== action.payload);
             state.total = state.tasks.length
         }
     },
