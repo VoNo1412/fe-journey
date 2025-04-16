@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import RequireAuth from "./components/Auth/RequireAuth";
 import Layout from "./pages/Layouts/Layout";
+import GoogleCallback from "./pages/ValidatePage";
 
 function Home() {
   return (
@@ -22,6 +23,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/success" element={<GoogleCallback />} />
         <Route path="*" element={<LoginPage />} />
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>

@@ -1,7 +1,13 @@
-import axios from "axios";
-import { HOST_BACKEND } from "./constants";
+import axios from 'axios';
+import { HOST_BACKEND } from './constants';
 
-export default axios.create({
-    baseURL: `${HOST_BACKEND}`,
-    withCredentials: true
-})
+const axiosInstance = axios.create({
+  baseURL: HOST_BACKEND,
+  withCredentials: true,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  return config;
+});
+
+export default axiosInstance;

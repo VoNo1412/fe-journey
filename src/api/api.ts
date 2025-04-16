@@ -1,5 +1,6 @@
 import { ISubTask, User } from "../common/interface";
-import axios from "./axios";
+import axiosInstance from "./axios";
+import { HOST_BACKEND } from "./constants";
 
 const endpoint = {
     task: "task",
@@ -7,62 +8,67 @@ const endpoint = {
     signup: "signup",
     login: "login",
     user: "user",
-}
+};
 
+// SUB TASK
 const SUB_TASK_API = {
     getAllSubTasks: async (userId: number) => {
         try {
-            const response = await axios.get(`/${endpoint.task}/sub/${userId}`);
+            const response = await axiosInstance.get(`/${endpoint.task}/sub/${userId}`);
             return { statusCode: 200, data: response.data.data };
         } catch (error) {
-            console.log("check error: ", error);
+            console.error("check error: ", error);
             throw new Error(error as any);
         }
     },
+
     apiPostSubTask: async (data: ISubTask) => {
         try {
-            const response = await axios.post(`/${endpoint.task}/sub`, data);
+            const response = await axiosInstance.post(`/${endpoint.task}/sub`, data);
             return { statusCode: 200, data: response.data };
         } catch (error) {
-            console.log("check error: ", error);
+            console.error("check error: ", error);
             throw new Error(error as any);
         }
     },
+
     apiUpdateSummarize: async (id: number, summarize: string) => {
         try {
-            const response = await axios.put(`/${endpoint.task}/sub/${id}`, { summarize });
+            const response = await axiosInstance.put(`/${endpoint.task}/sub/${id}`, { summarize });
             return { statusCode: 200, data: response.data };
         } catch (error) {
-            console.log("check error: ", error);
+            console.error("check error: ", error);
             throw new Error(error as any);
         }
     },
+
     apiDeleteSubTask: async (id: number) => {
         try {
-            const response = await axios.delete(`/${endpoint.task}/sub/${id}`);
+            const response = await axiosInstance.delete(`/${endpoint.task}/sub/${id}`);
             return { statusCode: 200, data: response.data };
         } catch (error) {
             throw new Error(error as any);
         }
     },
-}
-// category
+};
+
+// CATEGORY
 const CATEGORY_API = {
     apiGetCategories: async () => {
         try {
-            const response = await axios.get(`/${endpoint.category}`);
+            const response = await axiosInstance.get(`/${endpoint.category}`);
             return response.data;
         } catch (error) {
             throw new Error(error as any);
         }
     },
-}
+};
 
-// authen
+// AUTH
 const AUTH_API = {
     apiSignUp: async (user: User) => {
         try {
-            const response = await axios.post(`/auth/${endpoint.signup}`, user);
+            const response = await axiosInstance.post(`/auth/${endpoint.signup}`, user);
             return response.data;
         } catch (error) {
             throw new Error(error as any);
@@ -71,9 +77,16 @@ const AUTH_API = {
 
     apiLogin: async (user: User) => {
         try {
-            const response = await axios.post(`/auth/${endpoint.login}`, user);
-            console.log('first')
+            const response = await axiosInstance.post(`/auth/${endpoint.login}`, user);
             return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    apiLogout: async () => {
+        try {
+            return await axiosInstance.post(`/auth/logout`);
         } catch (error) {
             throw error;
         }
@@ -81,22 +94,28 @@ const AUTH_API = {
 
     apiGetMe: async () => {
         try {
-            const response = await axios.post(`/auth/me`);
+            const response = await axiosInstance.get(`/auth/me`);
+            console.log(response, "getme");
             return response.data;
         } catch (error) {
-            throw error
+            throw error;
         }
     },
 
     apiGetUsers: async (userId: number) => {
         try {
-            const response = await axios.get(`/user/list/${userId}`);
+            const response = await axiosInstance.get(`/user/list/${userId}`);
             return response.data;
         } catch (error) {
-            throw error
+            throw error;
         }
+    },
+
+    apiLoginWithGoogle: () => {
+        window.location.href = `${HOST_BACKEND}/auth/oauth2`;
     }
-}
+};
+
 export {
     CATEGORY_API,
     AUTH_API,

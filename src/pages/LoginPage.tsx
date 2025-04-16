@@ -1,5 +1,5 @@
 import { Box, Button, Divider, InputAdornment, TextField, Typography } from "@mui/material";
-// import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
+import { Google as GoogleIcon } from "@mui/icons-material";
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import React from "react";
 import { User } from "../common/interface";
@@ -58,6 +58,9 @@ const LoginPage = () => {
     }
   }
 
+  const handleLoginGoogle = () => AUTH_API.apiLoginWithGoogle();
+
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={1000} />
@@ -78,9 +81,8 @@ const LoginPage = () => {
             borderRadius: 3,
             boxShadow: 3,
             textAlign: "center",
-            
+
           }}
-          
           component={"form"}
           onSubmit={handleSubmitForm}
 
@@ -101,7 +103,6 @@ const LoginPage = () => {
             }}
             onChange={handleOnChange}
             slotProps={{
-              
               input: {
                 style: {
                   backgroundColor: 'transparent',
@@ -109,7 +110,7 @@ const LoginPage = () => {
                 },
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon sx={{color: "var(--primary-color)"}}/>
+                    <PersonIcon sx={{ color: "var(--primary-color)" }} />
                   </InputAdornment>
                 ),
               },
@@ -132,7 +133,7 @@ const LoginPage = () => {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LockOpenIcon sx={{color: "var(--primary-color)"}}/>
+                    <LockOpenIcon sx={{ color: "var(--primary-color)" }} />
                   </InputAdornment>
                 ),
               },
@@ -161,16 +162,16 @@ const LoginPage = () => {
             {!checkLogin ? "Login" : "Signup"}
           </Button>
 
-          {/* <Button
+          <Button
             fullWidth
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{ mb: 2, color: "var(--primary-color)", borderColor: "#D3D3D3" }}
-            onClick={alertProgressFeature}
+            onClick={handleLoginGoogle}
           >
             Continue with Google
           </Button>
-
+          {/* 
           <Button
             fullWidth
             variant="outlined"
@@ -179,7 +180,7 @@ const LoginPage = () => {
             sx={{ color: "var(--primary-color)", borderColor: "#D3D3D3" }}
           >
             Continue with Facebook
-          </Button> */}
+          </Button>  */}
         </Box>
       </Box>
     </>
