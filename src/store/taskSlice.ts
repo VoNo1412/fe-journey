@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Task } from "../common/interface";
+import { Task } from "../pages/Todo/interface/interface";
 import axios from "../api/axios";
 
 interface TaskState {

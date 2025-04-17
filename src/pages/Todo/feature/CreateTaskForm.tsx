@@ -1,10 +1,10 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Box } from "@mui/material";
-import { SUB_TASK_API } from "../../api/api";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { fetchTasks } from "../../store/taskSlice";
+import { AppDispatch } from "../../../store/store";
+import { fetchTasks } from "../../../store/taskSlice";
+import { SUB_TASK_API } from "../../../api/api";
 
 
 const TaskPopupForm = ({ open, handleClose, taskId }: any) => {
@@ -42,7 +42,7 @@ const TaskPopupForm = ({ open, handleClose, taskId }: any) => {
         <DialogTitle sx={{ color: "var(--primary-color)" }}>Create SubTask</DialogTitle>
         <DialogContent>
           <TextField label="Title" name="title" inputRef={inputRef} onChange={handleChange} required fullWidth margin="dense" />
-          <TextField label="Description" sx={{whiteSpace: 'pre-wrap'}} name="description" value={formData.description} onChange={handleChange} fullWidth multiline rows={3} margin="dense" />
+          <TextField label="Description" sx={{ whiteSpace: 'pre-wrap' }} name="description" value={formData.description} onChange={handleChange} fullWidth multiline rows={3} margin="dense" />
           <TextField select label="Status" name="status" value={formData.status} onChange={handleChange} fullWidth margin="dense">
             {statuses.map((status) => (
               <MenuItem key={status} value={status}>

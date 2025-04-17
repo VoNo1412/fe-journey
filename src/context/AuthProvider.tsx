@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AUTH_API } from "../api/api";
-import { IAuthContext } from "../common/interface";
+import { IAuthContext } from "../pages/Todo/interface/interface";
 
 const AuthContext = createContext<IAuthContext>({
     auth: null,

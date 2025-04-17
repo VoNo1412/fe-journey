@@ -1,11 +1,10 @@
 import { Box } from '@mui/material'
-import Sidebar from '../../components/Sidebar'
 import { Outlet } from 'react-router-dom'
+import MenuControl from '../../components/MenuControl'
 
 function Layout() {
     return (
         <Box className="app">
-            {/* <Header /> */}
             <Box
                 className="banner"
                 sx={{
@@ -15,7 +14,7 @@ function Layout() {
                 }}
             >
                 <Box sx={{ minHeight: "300px"}}>
-                    <Sidebar />
+                    <MenuControl />
                 </Box>
                 <Box sx={{ flex: 12 }}>
                     <Outlet />

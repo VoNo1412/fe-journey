@@ -34,6 +34,10 @@
   color: var(--primary-color) !important;
 }
 
+a {
+  color: var(--primary-color) !important;
+}
+
 .textArea::placeholder {
   color: white;
   font-family: "Roboto", sans-serif;

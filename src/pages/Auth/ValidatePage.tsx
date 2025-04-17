@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
-import { AUTH_API } from '../api/api';
+import useAuth from '../../hooks/useAuth';
+import { AUTH_API } from '../../api/api';
+
 
 const GoogleCallback = () => {
     const navigate = useNavigate();

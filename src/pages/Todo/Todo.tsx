@@ -1,22 +1,22 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import MeetingSchedule from "../components/MeetingSchedual";
-import { Tasks } from "../components/Tasks/Tasks";
-import getVietnamTimePeriod from "../common/time";
-import SidebarRight from "../components/SidebarRight";
+import { Tasks } from "./components/Tasks";
+import getVietnamTimePeriod from "../../utils/timeUtils";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import Header from "../components/Header/Header";
+import { RootState } from "../../store/store";
+import Header from "../../components/Header/Header";
+import ComingUpTask from "./components/ComingUpTask";
+import SocialUser from "./components/ActivityPanel";
 
-const Dashboard: React.FC = () => {
+export const TodoList: React.FC = () => {
   const { total } = useSelector((state: RootState) => state.tasks);
 
   return (
     <>
       <Header />
       <Box sx={{ display: "flex", gap: 3 }}>
-        <Box sx={{ flex: 8, display: "flex", flexDirection: "column", gap: "30px 0" }}>
-          <Box sx={{ background: "var(--second-deep-bgColor)", padding: 2, borderRadius: "24px", height: "60%" }}>
+        <Box sx={{ flex: 8, display: "flex", flexDirection: "column", gap: "10px 0" }}>
+          <Box sx={{ background: "var(--second-deep-bgColor)", borderRadius: "24px", height: "36%" }}>
             <Box
               sx={{
                 backgroundImage: `url(https://images.unsplash.com/photo-1741807117240-0aee0cd41d25?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMnx8fGVufDB8fHx8fA%3D%3D)`,
@@ -34,16 +34,15 @@ const Dashboard: React.FC = () => {
               <Typography variant="h4" fontWeight="bold">
                 Good {getVietnamTimePeriod()}
               </Typography>
-              <Typography variant="h6">You have {total} tasks today</Typography>
-              <MeetingSchedule />
+              <Typography variant="h6">You have {total || 0} tasks today</Typography>
+              <ComingUpTask />
             </Box>
           </Box>
           <Tasks />
         </Box>
-        <SidebarRight />
+        <SocialUser />
       </Box>
     </>
   );
 };
 
-export default Dashboard;

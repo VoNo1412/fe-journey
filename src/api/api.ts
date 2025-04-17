@@ -1,4 +1,4 @@
-import { ISubTask, User } from "../common/interface";
+import { ISubTask, User } from "../pages/Todo/interface/interface";
 import axiosInstance from "./axios";
 import { HOST_BACKEND } from "./constants";
 

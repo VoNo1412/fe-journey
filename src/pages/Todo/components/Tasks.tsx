@@ -4,23 +4,23 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { List } from "@mui/material";
-import { Category } from "../../common/interface";
+import { Category } from "../interface/interface";
 import React, { useState } from "react";
-import { CATEGORY_API, endpoint } from "../../api/api";
-import useAuth from "../../hooks/useAuth";
-import TaskMenuDropdown from "./components/TaskMenuDropdown";
-import useFetchQuery from "../../hooks/useFetchSearch";
+import { CATEGORY_API, endpoint } from "../../../api/api";
+import useAuth from "../../../hooks/useAuth";
+import useFetchQuery from "../../../hooks/useFetchSearch";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store";
-import { createTask, createTaskToUser, deleteTask, fetchTasks, removeTaskOptimistic } from "../../store/taskSlice";
+import { AppDispatch, RootState } from "../../../store/store";
+import { createTask, createTaskToUser, deleteTask, fetchTasks, removeTaskOptimistic } from "../../../store/taskSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { showNotification } from "../../store/notificationSlice";
-
+import { showNotification } from "../../../store/notificationSlice";
+import { Dayjs } from 'dayjs';
+import TodoChildren from "./TaskChildren";
 
 export const Tasks = () => {
     const [category, setCategory] = React.useState<Category[]>([]);
-    const inputRef = React.useRef<HTMLInputElement | null>(null); // Define the
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
     const { auth } = useAuth();
     const [query, setQuery] = useState("");
     const { data } = useFetchQuery(`/${endpoint.user}/by_name`, query);
@@ -28,7 +28,6 @@ export const Tasks = () => {
     const { tasks, loading } = useSelector((state: RootState) => state.tasks);
     const { message, type } = useSelector((state: RootState) => state.notification);
     const [assignedUser, setAssignedUser] = React.useState<any>([]);
-
 
     React.useEffect(() => {
         if (message) {
@@ -41,9 +40,10 @@ export const Tasks = () => {
         categoryId: null as null | number,
         isCompleted: false,
         assignUserId: null,
-        userId: auth?.user.id
+        userId: auth?.user.id,
+        startDate: null as Dayjs | null,
+        endDate: null as Dayjs | null,
     });
-
 
     React.useEffect(() => {
         const fetchGetCategories = async () => await CATEGORY_API.apiGetCategories();
@@ -55,7 +55,7 @@ export const Tasks = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [])
+    }, []);
 
     React.useEffect(() => {
         if (!auth?.user?.id) return;
@@ -67,33 +67,43 @@ export const Tasks = () => {
         try {
             const title = inputRef.current?.value?.trim();
             if (!title) return;
+            const taskData = {
+                ...formData,
+                title,
+            };
             if (assignedUser.length) {
-                dispatch(createTaskToUser({ ...formData, title, assignedUser, assignById: auth?.user.id })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+                dispatch(createTaskToUser({ ...taskData, assignedUser, assignById: auth?.user.id }))
+                    .unwrap()
+                    .then(() => dispatch(fetchTasks(auth.user.id)));
             } else {
-                dispatch(createTask({ ...formData, title })).unwrap().then(() => dispatch(fetchTasks(auth.user.id)))
+                dispatch(createTask(taskData))
+                    .unwrap()
+                    .then(() => dispatch(fetchTasks(auth.user.id)));
             }
-            if (inputRef.current) { inputRef.current.value = ""}
+            if (inputRef.current) {
+                inputRef.current.value = "";
+            }
             dispatch(showNotification({ message: "Create task successfully!", type: "success" }));
-            setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false } as any);
-            setAssignedUser([])
+            setFormData({ ...formData, title: "", categoryId: formData.categoryId, isCompleted: false, startDate: null, endDate: null } as any);
+            setAssignedUser([]);
         } catch (error) {
             console.error("Error creating task:", error);
             alert("Failed to create task." + error);
-        };
-    }
+        }
+    };
 
     const handleInputChange = (e: any) => {
         setFormData((prevData) => ({
             ...prevData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         }));
     };
 
     const handleDeleteTask = async (taskUserId: number) => {
         try {
-            dispatch(removeTaskOptimistic(taskUserId)); // Remove from UI immediately
+            dispatch(removeTaskOptimistic(taskUserId));
             dispatch(showNotification({ message: "Delete task successfully!", type: "success" }));
-            await dispatch(deleteTask(taskUserId)).unwrap(); // Ensure task is deleted before fetching    
+            await dispatch(deleteTask(taskUserId)).unwrap();
         } catch (error) {
             dispatch(showNotification({ message: "Failed to delete task.", type: "error" }));
         }
@@ -103,7 +113,6 @@ export const Tasks = () => {
     return (
         <>
             <ToastContainer position="top-right" autoClose={1000} />
-
             <Box
                 sx={{
                     display: "flex",
@@ -115,12 +124,11 @@ export const Tasks = () => {
                     borderRadius: "20px",
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                     color: "var(--primary-color)",
-                    background: "var(--third-deep-bgColor)"
+                    background: "var(--third-deep-bgColor)",
                 }}
-
-                component={"form"} onSubmit={handleSubmitTask}
+                component={"form"}
+                onSubmit={handleSubmitTask}
             >
-                {/* Task Input Field */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, marginBottom: 2 }}>
                     <TextField
                         fullWidth
@@ -130,7 +138,7 @@ export const Tasks = () => {
                         inputRef={inputRef}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                              handleSubmitTask(e); // gọi hàm tạo task
+                                handleSubmitTask(e);
                             }
                         }}
                         InputProps={{
@@ -143,24 +151,25 @@ export const Tasks = () => {
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
-                                  <Box
-                                    sx={{
-                                      width: 30,
-                                      height: 30,
-                                      backgroundColor: "var(--primary-color)",
-                                      borderRadius: "50%",
-                                      marginRight: "5px",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: 'center'
-                                    }}
-                                  >{assignedUser.length}</Box>
+                                    <Box
+                                        sx={{
+                                            width: 30,
+                                            height: 30,
+                                            backgroundColor: "var(--primary-color)",
+                                            borderRadius: "50%",
+                                            marginRight: "5px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {assignedUser.length}
+                                    </Box>
                                 </InputAdornment>
-                              ),
+                            ),
                         }}
                         sx={{
                             background: "var(--primary-light-bgColor)",
-                            // color: "var(--primary-color)",
                             borderRadius: "25px",
                             "& fieldset": { border: "none" },
                         }}
@@ -170,7 +179,6 @@ export const Tasks = () => {
                     </IconButton>
                 </Box>
 
-                {/* Quick Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     <Autocomplete
                         sx={{
@@ -183,37 +191,35 @@ export const Tasks = () => {
                         freeSolo
                         options={data.filter((x: any) => x.id !== auth.user.id)}
                         getOptionLabel={(option: any) => option?.username || ""}
-                        onChange={(_: any, value) =>
-                        {
+                        onChange={(_: any, value) => {
                             setFormData(prev => {
-                                console.log('assigned to user', value?.id)
                                 const isAssigning = Boolean(value?.id);
                                 return {
                                     ...prev,
                                     userId: isAssigning ? value.id : auth?.user.id,
                                     assignUserId: isAssigning ? auth?.user.id : null,
                                 };
-                            })
-
-                            Boolean(value?.id) && !assignedUser.includes(value.id) ? setAssignedUser((prev: any) => [...prev, value.id]) : setAssignedUser([]);
-                        }
-                        }
-                        renderInput={(params) =>
+                            });
+                            Boolean(value?.id) && !assignedUser.includes(value.id)
+                                ? setAssignedUser((prev: any) => [...prev, value.id])
+                                : setAssignedUser([]);
+                        }}
+                        renderInput={(params) => (
                             <TextField
                                 {...params}
                                 label="Assign the task to users"
                                 onChange={(e) => setQuery(e.target.value)}
-                                onKeyDown={e => {
-                                    if (e.key == "Enter") {
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
                                         e.preventDefault();
                                         return;
                                     }
                                 }}
-                            />}
-
+                            />
+                        )}
                     />
                     <FormControl sx={{ flex: 1 }}>
-                        <InputLabel shrink>Category</InputLabel> {/* Shrink label to prevent overlap */}
+                        <InputLabel shrink>Category</InputLabel>
                         <Select
                             labelId="category-label"
                             id="categoryId"
@@ -224,17 +230,26 @@ export const Tasks = () => {
                             sx={chipStyle}
                             defaultValue={formData.categoryId}
                         >
-                            {category.map((item: any, index) => <MenuItem key={index} value={item?.id ?? ''}>
-                                {item.name}
-                            </MenuItem>)}
+                            {category.map((item: any, index) => (
+                                <MenuItem key={index} value={item?.id ?? ''}>
+                                    {item.name}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Now</Button>
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Tomorrow</Button>
                     <Button variant="outlined" startIcon={<AccessTime />} sx={chipStyle}>Next week</Button>
-                    <Button variant="outlined" startIcon={<Event />} sx={chipStyle}>Custom</Button>
+                    <Button
+                        variant="outlined"
+                        startIcon={<Event />}
+                        sx={chipStyle}
+                    >
+                        Custom
+                    </Button>
                 </Box>
             </Box>
+
             <Box
                 sx={{
                     width: "100%",
@@ -249,7 +264,7 @@ export const Tasks = () => {
                     tasks && tasks.length > 0 && (
                         <List sx={{ minHeight: "70px" }}>
                             {tasks.map((task: any, index) => (
-                                <TaskMenuDropdown
+                                <TodoChildren
                                     key={index}
                                     task={task}
                                     index={index}
@@ -259,19 +274,15 @@ export const Tasks = () => {
                         </List>
                     )
                 )}
-
             </Box>
         </>
     );
 };
 
-
 const chipStyle = {
     borderRadius: "25px",
     textTransform: "none",
-    // borderColor: "#ccc",
     border: "none",
     color: "var(--primary-color)",
     backgroundColor: "var(--third-light-bgColor)",
-    // "&:hover": { borderColor: "#888" },
 };

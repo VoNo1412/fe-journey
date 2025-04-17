@@ -1,16 +1,16 @@
 import { ListItem, ListItemButton, Checkbox, Box, Typography, TextareaAutosize } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
-import { ISubTask, Task } from "../../../common/interface";
 import React from "react";
-import TaskPopupForm from "../CreateTaskForm";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SUB_TASK_API } from "../../../api/api";
-import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store/store";
-import { fetchTasks, updateTask } from "../../../store/taskSlice";
 import { debounce } from "lodash";
+import { ISubTask, Task } from "../interface/interface";
+import useAuth from "../../../hooks/useAuth";
+import { AppDispatch } from "../../../store/store";
+import { SUB_TASK_API } from "../../../api/api";
+import { fetchTasks, updateTask } from "../../../store/taskSlice";
+import TaskPopupForm from "../feature/CreateTaskForm";
 
 interface TaskMenuDropdownProps {
     task: Task;

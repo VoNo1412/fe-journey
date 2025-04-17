@@ -51,6 +51,22 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.side_main {
+  background-color: #16213e;
+  height: 100vh;
+  padding: 20px;
+  width: 240px;
+  box-sizing: border-box;
+}
+
+.MuiListItemText-primary {
+  color: white !important;
+}
+
+.MuiListItemButton-root {
+  transition: background-color 0.3s ease;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

@@ -6,8 +6,10 @@ import WorkIcon from '@mui/icons-material/Work';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import GridViewIcon from '@mui/icons-material/GridView';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
-export const slideBarItems = [
+export const MenuControlItems = [
+    { name: 'Todo', icon: <FormatListBulletedIcon sx={{ fill: "var(--primary-color)"}} /> },
     { name: 'Dashboard', icon: <GridViewIcon sx={{ fill: "var(--primary-color)"}} /> },
     { name: 'List', icon: <ListAltRoundedIcon sx={{ fill: "var(--primary-color)"}}/> },
     { name: 'Calendar', icon: <CalendarMonthRoundedIcon sx={{ fill: "var(--primary-color)"}} /> },

@@ -4,11 +4,11 @@ import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import { Badge, Box, InputBase, Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
-import Notification from './component/Notification';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import useAuth from '../../hooks/useAuth';
 import { AUTH_API } from '../../api/api';
+import Notification from "./Notification";
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -72,7 +72,7 @@ const Header = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px', marginBottom: '20px' }}>
             <Box
                 sx={{
-                    padding: '10px',
+                    padding: '4px',
                     backgroundColor: 'white',
                     borderRadius: '28px',
                     display: 'flex',
@@ -144,12 +144,15 @@ const Header = () => {
                         </button>
                         {open ? <Notification notificationRef={notificationRef} /> : <></>}
                     </Box>
-                    <Box sx={{ width: '46px', height: '10%' }}>
+                    <Box sx={{
+                        width: "43px",
+                        height: "43px"
+                    }}>
                         <Box
                             component="img"
                             src={
-                                auth?.user?.avatar ||
-                                'https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=164&h=164&fit=crop&auto=format&dpr=2'
+                                auth?.user?.avatar  ||
+                                    'https://images.unsplash.com/photo-1741807117240-0aee0cd41d25?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMnx8fGVufDB8fHx8fA%3D%3D'
                             }
                             alt="avatar"
                             sx={{ borderRadius: '50%', cursor: 'pointer' }}

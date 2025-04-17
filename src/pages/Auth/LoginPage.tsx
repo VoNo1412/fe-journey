@@ -2,15 +2,15 @@ import { Box, Button, Divider, InputAdornment, TextField, Typography } from "@mu
 import { Google as GoogleIcon } from "@mui/icons-material";
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import React from "react";
-import { User } from "../common/interface";
-import { AUTH_API } from "../api/api";
-import useAuth from "../hooks/useAuth";
+import { User } from "../Todo/interface/interface";
+import { AUTH_API } from "../../api/api";
+import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import "react-toastify/dist/ReactToastify.css";
-import { clearNotification, showNotification } from "../store/notificationSlice";
+import { clearNotification, showNotification } from "../../store/notificationSlice";
 import PersonIcon from '@mui/icons-material/Person';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
@@ -49,7 +49,7 @@ const LoginPage = () => {
       }
 
       setAuth({ user: { ...res.user } });
-      navigate("/dashboard", { replace: true });
+      navigate("/todo", { replace: true });
       setForm({ username: "", password: "" });
     } catch (error: any) {
       console.log("this is error: ", error);

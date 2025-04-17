@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography, List, ListItem, Box } from "@mui/material";
-import useAuth from "../hooks/useAuth";
 import React, { useEffect } from "react";
-import { SUB_TASK_API } from "../api/api";
+import useAuth from "../../../hooks/useAuth";
+import { SUB_TASK_API } from "../../../api/api";
 
 const getRandomColor = () => {
   const randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -17,8 +17,7 @@ const getRandomGradient = () => {
   return `linear-gradient(${randomDirection}, ${color1}, ${color2})`;
 };
 
-// export default GradientComponent;
-const MeetingSchedule = () => {
+const ComingUpTask = () => {
   const { auth } = useAuth();
   const [subTasks, setSubTask] = React.useState([]);
 
@@ -31,7 +30,7 @@ const MeetingSchedule = () => {
   return (
     <>
       {subTasks?.length ?
-        <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end", bgcolor: "var(--primary-deep-bgColor)", WebkitBoxShadow: "0 10px 10px powderblue", color: "var(--primary-color)", minWidth: "300px", minHeight: "200px" }}>
+        <Card sx={{ maxWidth: 350, borderRadius: 4, boxShadow: 3, alignSelf: "flex-end", bgcolor: "var(--primary-deep-bgColor)", WebkitBoxShadow: "0 10px 10px powderblue", color: "var(--primary-color)", minWidth: "300px", minHeight: "200px", overflowY: "scroll" }}>
           <CardContent>
             <Typography variant="h6" fontWeight="bold">
               Up next
@@ -62,10 +61,10 @@ const MeetingSchedule = () => {
             </List>
           </CardContent>
         </Card>
-       : <></>}
-       
+        : <></>}
+
     </>
   );
 };
 
-export default React.memo(MeetingSchedule);
+export default React.memo(ComingUpTask);

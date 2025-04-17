@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Avatar, IconButton } from "@mui/material
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
+import { RootState } from "../../store/store";
 
 const NotificationItem = ({ notification }: any) => {
     return (
