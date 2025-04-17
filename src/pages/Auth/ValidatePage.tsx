@@ -18,7 +18,7 @@ const GoogleCallback = () => {
             }
         };
         fetchUser();
-        navigate('/dashboard')
+        navigate('/todo')
 
     }, []);
 
