@@ -58,7 +58,7 @@ const StatsChart = () => {
   };
 
   return (
-    <Box className="stats-chart-container">
+    <Box className="stats-chart-container" width={"90%"}>
       <Box className="stats-header">
         <Typography variant="h6" className="stats-title">
           Statistics

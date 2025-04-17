@@ -19,6 +19,8 @@
 
   --primary-size-icons: 26px;
   --seccond-size-icons: 23px;
+
+  --primary-folder-bgColor: #1E1B2E;
 }
 
 .MuiPickersDay-root, .MuiDayCalendar-weekDayLabel,
@@ -141,3 +143,4 @@ input:-webkit-autofill {
   color: white !important;
   caret-color: white !important;
 }
+

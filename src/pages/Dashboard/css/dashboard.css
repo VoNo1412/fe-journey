@@ -21,7 +21,7 @@
 }
 
 .stat-card {
-    background-color: #16213e !important;
+    background-color: var(--primary-folder-bgColor) !important;
     color: white !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
@@ -31,6 +31,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 8px;
+    justify-content: space-between;
 }
 
 .title-text {
@@ -41,10 +42,6 @@
     font-size: 16px;
 }
 
-.value-text {
-    margin-bottom: 8px;
-}
-
 .chart-container {
     height: 40px;
     margin-bottom: 8px;
@@ -52,10 +49,15 @@
 
 .change-text {
     font-size: 14px;
+    position: absolute;
+    right: 1px;
+    width: 103px;
+    bottom: 10px;
 }
 
 .change-text.positive {
     color: green;
+  
 }
 
 .change-text.negative {
@@ -133,6 +135,15 @@
 }
 
 /* Note: There's a duplicate .date-text class; using the one from greeting */
+
+.chart-container-folder {
+    height: 100px;
+    /* background-color: #16213e; */
+    border-radius: 16px;
+    padding: 16px;
+    transform: rotate3d(1, 1, 1, -45deg);
+}
+
 .chart-container {
     height: 200px;
     background-color: #16213e;

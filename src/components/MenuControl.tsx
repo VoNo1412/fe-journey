@@ -22,7 +22,7 @@ export default function MenuControl() {
             className="side_main"
             style={{
                 backgroundColor: 'var(--second-light-bgColor)',
-                height: '100vh',
+                height: '100%',
                 padding: '20px',
                 width: '240px',
                 borderRadius: "24px"
@@ -52,13 +52,13 @@ export default function MenuControl() {
                 }}
             >
                 <List component="nav" aria-label="sidebar">
-                    {MenuControlItems.map((item: any, index) => (
+                    {MenuControlItems.map((item, index) => (
                         <NavLink
+                            key={index} // Add key here
                             to={item?.name.toLowerCase()}
                             style={{ textDecoration: 'none' }}
                         >
                             <ListItemButton
-                                key={index}
                                 className={selectedIndex === index ? 'active' : ''}
                                 selected={selectedIndex === index}
                                 onClick={() => handleListItemClick(index)}
@@ -77,7 +77,6 @@ export default function MenuControl() {
                                 <ListItemText primary={item.name} sx={{ color: 'white' }} />
                             </ListItemButton>
                         </NavLink>
-
                     ))}
                 </List>
             </Box>

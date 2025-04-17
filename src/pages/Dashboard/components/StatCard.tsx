@@ -4,7 +4,7 @@ import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
-const StatCard = ({ title, value, change, color }: any) => {
+const StatCard = ({ title, value, change, color, index }: any) => {
   const data = {
     labels: ['1', '2', '3', '4', '5'],
     datasets: [
@@ -33,17 +33,18 @@ const StatCard = ({ title, value, change, color }: any) => {
     <Card className="stat-card">
       <CardContent>
         <Box className="title-container">
-          <Typography variant="body1" className="title-text">
+          <Typography variant="body1" className="title-text" sx={{ paddingTop: "10px", fontSize: "14px", color: "#998b8b" }}>
+            {index == 0 && <span className="icon">⭐</span>}
+            {index == 1 && <span className="icon">📋</span>}
+            {index == 2 && <span className="icon">📊</span>}
             {title}
           </Typography>
-          {title === 'Task Completed' && <span className="icon">⭐</span>}
-          {title === 'New Tasks' && <span className="icon">📋</span>}
-          {title === 'Project Done' && <span className="icon">📊</span>}
+          <Typography variant="h6" className="value-text" color='#998b8b' paddingTop={"10px"}>
+            {value}
+          </Typography>
         </Box>
-        <Typography variant="h4" className="value-text">
-          {value}
-        </Typography>
-        <Box className="chart-container">
+        <hr style={{ border: "1px solid #998b8b" }} />
+        <Box className="chart-container-folder">
           <Line data={data} options={options} />
         </Box>
         <Typography
