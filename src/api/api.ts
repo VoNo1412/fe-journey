@@ -72,7 +72,7 @@ const UPLOAD_API = {
             const formData = new FormData();
             // Append each file to FormData
             files.forEach((file, index: any) => {
-                console.log(index)
+                console.log("this is one: ", index)
                 formData.append('files', file); // 'files' should match your backend's expected field name
             });
 
