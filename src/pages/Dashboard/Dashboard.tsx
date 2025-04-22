@@ -6,6 +6,7 @@ import "./css/dashboard.css";
 import useAuth from '../../hooks/useAuth';
 import getVietnamTimePeriod from '../../utils/timeUtils';
 import mockData from '../../mock/stat.mock';
+import React from 'react';
 const currentDate = new Date();
 const formattedDate = currentDate.toLocaleDateString('en-US', {
   weekday: 'long',
@@ -74,4 +75,4 @@ const Dashboard = () => {
   </>
 }
 
-export default Dashboard;
+export default React.memo(Dashboard);
