@@ -64,6 +64,33 @@ const CATEGORY_API = {
     },
 };
 
+// UPLOAD FILES
+const UPLOAD_API = {
+    apiUploadFilesR2: async (files: File[], subTaskId: number) => {
+        try {
+            // Create FormData object
+            const formData = new FormData();
+            // Append each file to FormData
+            files.forEach((file, index: any) => {
+                console.log(index)
+                formData.append('files', file); // 'files' should match your backend's expected field name
+            });
+
+            formData.append("subtaskId", subTaskId.toString()); // ✅ tất cả thường
+            // Make the POST request with FormData
+            const response = await axiosInstance.post(`/upload/multi`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            return { statusCode: 201, data: response.data };
+        } catch (error) {
+            console.error("check error: ", error);
+            throw new Error(error as any);
+        }
+    },
+};
 // AUTH
 const AUTH_API = {
     apiSignUp: async (user: User) => {
@@ -119,5 +146,6 @@ export {
     CATEGORY_API,
     AUTH_API,
     endpoint,
-    SUB_TASK_API
+    SUB_TASK_API,
+    UPLOAD_API
 };

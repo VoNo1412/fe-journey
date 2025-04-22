@@ -21,6 +21,7 @@ interface ISubTask {
     description: string;
     summarize?: string;
     userId: number;
+    files?: any
 }
 
 interface Category {

@@ -11,6 +11,7 @@ import { AppDispatch } from "../../../store/store";
 import { SUB_TASK_API } from "../../../api/api";
 import { fetchTasks, updateTask } from "../../../store/taskSlice";
 import TaskPopupForm from "../feature/CreateTaskForm";
+import { FilePreview } from "../../../utils/previewFiles";
 
 interface TaskMenuDropdownProps {
     task: Task;
@@ -174,8 +175,7 @@ const TaskMenuDropdown: React.FC<TaskMenuDropdownProps> = ({ task, index, handle
                             }
                         }}
                     />
-
-
+                    <FilePreview key={sub.id} files={sub.files} />
                 </Box>
             ))}
         </>
