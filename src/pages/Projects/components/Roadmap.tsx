@@ -27,7 +27,7 @@ const formatDate = (dateString: string) => {
 export default function RoadmapPage() {
   const [entries, setEntries] = useState(roadmapMock);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [newEntry, setNewEntry] = useState({ title: "", description: "", version: "", releaseDate: "" });
+  const [newEntry, setNewEntry] = useState({ title: "", description: "", comment: "", releaseDate: "" });
   const [editingEntry, setEditingEntry] = useState<any>(null); // State để lưu entry đang chỉnh sửa
 
   const navigate = useNavigate();
@@ -44,13 +44,13 @@ export default function RoadmapPage() {
       setNewEntry({
         title: entry.title,
         description: entry.description,
-        version: entry.version,
+        comment: entry.comment,
         releaseDate: entry.releaseDate,
       });
     } else {
       // Nếu thêm mới, reset form
       setEditingEntry(null);
-      setNewEntry({ title: "", description: "", version: "", releaseDate: "" });
+      setNewEntry({ title: "", description: "", comment: "", releaseDate: "" });
     }
     setDrawerOpen(true);
   };
@@ -58,7 +58,7 @@ export default function RoadmapPage() {
   const handleCloseDrawer = () => {
     setDrawerOpen(false);
     setEditingEntry(null);
-    setNewEntry({ title: "", description: "", version: "", releaseDate: "" });
+    setNewEntry({ title: "", description: "", comment: "", releaseDate: "" });
   };
 
   const handleChange = (e: any) => {
@@ -84,7 +84,7 @@ export default function RoadmapPage() {
         id: newEntryId,
         title: newEntry.title,
         description: newEntry.description,
-        version: newEntry.version,
+        comment: newEntry.comment,
         releaseDate: newEntry.releaseDate,
       };
       setEntries((prev: any) => [...prev, newEntryData]);
@@ -176,18 +176,28 @@ export default function RoadmapPage() {
                         </IconButton>
                       </Stack>
                     </Box>
-                    <Typography variant="body2">{entry.description}</Typography>
-                    <Typography variant="caption">Version: {entry.version}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textOverflow: "ellipsis",
+                        maxWidth: "500px",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {entry.description}
+                    </Typography>
+                    <Typography variant="caption">comment: {entry.comment}</Typography>
                   </CardContent>
                 </Card>
               </Box>
             ))
           )}
         </Stack>
-      </Box>
+      </Box >
 
       <Drawer anchor="right" open={drawerOpen} onClose={handleCloseDrawer}>
-        <Box sx={{ width: 300, padding: 3, bgcolor: "#000", color: "white", height: "100%" }}>
+        <Box sx={{ width: 700, padding: 3, bgcolor: "#000", color: "white", height: "100%" }}>
           <Typography variant="h6" gutterBottom>
             {editingEntry ? "Edit Entry" : "Add Entry"}
           </Typography>
@@ -209,18 +219,18 @@ export default function RoadmapPage() {
             fullWidth
             margin="normal"
             multiline
-            rows={3}
+            rows={3 * 3}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{ style: { color: "white", backgroundColor: "#333", borderRadius: 4 } }}
           />
           <TextField
-            label="Version"
-            name="version"
-            value={newEntry.version}
+            label="comment"
+            name="comment"
+            value={newEntry.comment}
             onChange={handleChange}
             fullWidth
             margin="normal"
-            placeholder="v0.0.1"
+            placeholder="Enter your comment here..."
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{ style: { color: "white", backgroundColor: "#333", borderRadius: 4 } }}
           />
@@ -240,6 +250,6 @@ export default function RoadmapPage() {
           </Button>
         </Box>
       </Drawer>
-    </Box>
+    </Box >
   );
 }

@@ -1,56 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Card,
   Typography,
-  LinearProgress,
   TextField,
-  Avatar,
-  Chip,
   Drawer,
   IconButton,
+  Autocomplete,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import projectMock from "../../mock/project.mock";
-
-const ProjectCard = ({ project }: any) => {
-  const navigate = useNavigate();
-
-  return (
-    <Card
-      sx={{ backgroundColor: "#121212", color: "#fff", p: 2, borderRadius: 3, flex: 3 }}
-      onClick={() => {
-        navigate(`/project/${project.id}`, { state: { projectName: project.name } });
-      }}
-    >
-      <Box display="flex" alignItems="center" mb={2}>
-        <Avatar
-          src="/path/to/your/image.png"
-          variant="rounded"
-          sx={{ width: 48, height: 48, mr: 2 }}
-        />
-        <Box>
-          <Typography variant="h6">{project.name}</Typography>
-          <Chip label="Building" color="primary" size="small" sx={{ mt: 0.5 }} />
-        </Box>
-      </Box>
-
-      <Box display="flex" justifyContent="space-between" mb={1}>
-        <Typography variant="body2">0% Completed</Typography>
-        <Typography variant="body2">0/0 tasks</Typography>
-      </Box>
-
-      <LinearProgress variant="determinate" value={0} sx={{ height: 8, borderRadius: 5 }} />
-
-      <Typography variant="caption" color="grey.500" mt={2} display="block">
-        Last updated Just now
-      </Typography>
-    </Card>
-  );
-};
+import ProjectTabs from "./components/Tab";
+import useFetchQuery from "../../hooks/useFetchSearch";
+import { endpoint } from "../../api/api";
+import useAuth from "../../hooks/useAuth";
 
 const ProjectsPage = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -58,10 +23,14 @@ const ProjectsPage = () => {
   const [newProject, setNewProject] = useState({
     name: "",
     idea: "",
-    targetUser: "",
+    tagsUser: []
   });
+  const [tab, setTab] = useState(0);
+  const [query, setQuery] = useState("");
+  const { data } = useFetchQuery(`/${endpoint.user}/by_name`, query);
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const { auth } = useAuth()
 
   // Kiểm tra nếu route hiện tại là "/project"
   const isProjectsRoute = location.pathname === "/project";
@@ -81,14 +50,24 @@ const ProjectsPage = () => {
       id: newId,
       name: newProject.name,
       idea: newProject.idea,
-      targetUser: newProject.targetUser,
+      tab: tab,
     };
-    setProjects((prev) => [...prev, newProjectData]);
-    setNewProject({ name: "", idea: "", targetUser: "" });
+    setProjects((prev: any) => [...prev, newProjectData]);
+    setNewProject({ name: "", idea: "", tagsUser: [] });
     setOpenDrawer(false);
-    // Điều hướng đến roadmap của project vừa tạo
-    navigate(`/project/${newId}`, { state: { projectName: newProjectData.name } });
+    // navigate(`/project/${newId}`, { state: { projectName: newProjectData.name } });
   };
+
+  useEffect(() => {
+    if (openDrawer) {
+      setNewProject({ name: "", idea: "", tagsUser: [] });
+    }
+
+    if (tab) {
+      setNewProject((prev) => ({ ...prev, tab }));
+    }
+  }, [openDrawer, tab]);
+
 
   return (
     <Box minHeight="100vh" bgcolor="#000" p={4}>
@@ -118,13 +97,11 @@ const ProjectsPage = () => {
             </Button>
           </Box>
 
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          <Box >
             {projects.length === 0 ? (
               <Typography color="white">No projects yet. Create one to get started!</Typography>
             ) : (
-              projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))
+              <ProjectTabs projects={projects} setTab={setTab} />
             )}
           </Box>
         </>
@@ -140,7 +117,7 @@ const ProjectsPage = () => {
           sx: { width: { xs: "100%", sm: 400 }, backgroundColor: "#121212", color: "white" },
         }}
       >
-        <Box p={3} position="relative" height="100%">
+        <Box p={3} position="relative" height="100%" gap={2} display="flex" flexDirection="column">
           <IconButton
             onClick={() => setOpenDrawer(false)}
             sx={{ position: "absolute", top: 10, right: 10, color: "white" }}
@@ -176,17 +153,62 @@ const ProjectsPage = () => {
             InputProps={{ sx: { color: "white", backgroundColor: "#1e1e1e" } }}
           />
 
-          <TextField
-            label="Target user"
-            name="targetUser"
-            value={newProject.targetUser}
-            onChange={handleChange}
-            required
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ sx: { color: "white" } }}
-            InputProps={{ sx: { color: "white", backgroundColor: "#1e1e1e" } }}
-          />
+          {tab == 0 &&
+            <Autocomplete
+              sx={{
+                borderRadius: "25px",
+                "& fieldset": { border: "none" },
+              }}
+              id="free-solo-demo"
+              freeSolo
+              options={data.filter((x: any) => x.id !== auth.user.id)}
+              getOptionLabel={(option: any) => option?.username || ""}
+              onChange={(_: any, value) => {
+                if (value && !newProject.tagsUser.some((x: any) => x.id == value.id)) {
+                  setNewProject((prev) => ({ ...prev, tagsUser: [...prev.tagsUser, { id: value.id, username: value?.username }] } as any));
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ color: "white", backgroundColor: "#1e1e1e" }}
+                  label="Target user"
+                  placeholder="Search user"
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              )}
+            />
+
+          }
+
+          {tab == 0 && newProject.tagsUser.length > 0 && <Box mb={1}>
+            <Typography variant="subtitle1" fontWeight="bold" mb={1}>
+              Tags user
+            </Typography>
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              alignItems: "center",
+              border: "1px solid #ccc",
+              borderRadius: 1,
+              padding: 1
+            }}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {newProject.tagsUser.map((tag: any, index) => <Box key={index}
+                  sx={{ backgroundColor: "#1e1e1e", display: "flex", padding: 1, borderRadius: 1 }}>
+                  {tag.username}
+                  <Box sx={{ ml: 1 }}>X</Box>
+                </Box>)}
+              </Box>
+              <Box>X</Box>
+            </Box>
+          </Box>}
 
           <Button
             variant="contained"
@@ -194,7 +216,7 @@ const ProjectsPage = () => {
             fullWidth
             sx={{ mt: 3, borderRadius: 3, textTransform: "none", fontWeight: "bold" }}
             onClick={handleCreateProject}
-            disabled={!newProject.name || !newProject.idea || !newProject.targetUser}
+            disabled={!newProject.name || !newProject.idea}
           >
             Create
           </Button>

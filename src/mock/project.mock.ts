@@ -3,18 +3,18 @@ export default [
         id: "1",
         name: "The Journey",
         idea: "A platform for personal growth tracking",
-        targetUser: "Individuals seeking self-improvement",
+        tab: 0
     },
     {
         id: "2",
         name: "Fitness App",
         idea: "Track workouts and diet plans",
-        targetUser: "Fitness enthusiasts",
+        tab: 1
     },
     {
         id: "3",
         name: "Dame App",
         idea: "Track workouts and diet plans",
-        targetUser: "Fitness enthusiasts",
+        tab: 0
     },
 ];

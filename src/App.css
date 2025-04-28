@@ -23,6 +23,10 @@
   --primary-folder-bgColor: #1E1B2E;
 }
 
+button {
+  color: var(--primary-color) !important;
+}
+
 .MuiPickersDay-root, .MuiDayCalendar-weekDayLabel,
 /* .css-16hplv9-MuiButtonBase-root-MuiIconButton-root-MuiPickersCalendarHeader-switchViewButton, .css-xp4e7m-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,.css-1bsiu4i-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,  */
 /* .css-1c5829p-MuiTypography-root, */
